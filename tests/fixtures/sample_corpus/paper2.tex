@@ -1,0 +1,31 @@
+\documentclass{article}
+\title{Advances in Attention Mechanisms}
+\author{Jane Doe}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Attention mechanisms have revolutionised sequence modelling by allowing models
+to focus selectively on relevant parts of the input. This work examines recent
+advances in multi-head attention and sparse attention variants.
+
+\section{Background}
+The original attention mechanism was introduced in the context of neural machine
+translation. \textbf{Self-attention} extends this idea by computing attention
+weights within a single sequence rather than between an encoder and decoder.
+
+\subsection{Multi-Head Attention}
+Multi-head attention projects the input into multiple subspaces, enabling the
+model to capture diverse relational patterns. Each head operates independently
+and the outputs are concatenated before a final linear projection.
+
+\section{Experiments}
+We benchmarked three attention variants on the \textit{WMT-14} translation
+dataset. Sparse attention reduced memory consumption by 40\% with less than
+1\% degradation in BLEU score.
+
+\section{Conclusion}
+Efficient attention variants make it practical to apply transformer models
+to longer sequences without prohibitive memory costs.
+
+\end{document}
