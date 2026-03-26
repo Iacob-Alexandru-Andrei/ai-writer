@@ -1,0 +1,70 @@
+line-length = 100
+target-version = "py313"
+fix = false
+unsafe-fixes = false
+force-exclude = true
+
+extend-exclude = [
+  ".venv",
+  "venv",
+  "build",
+  "dist",
+]
+
+[lint]
+select = ["ALL"]
+ignore = [
+  # Mutually exclusive docstring rules (D203 vs D211, D213 vs D212).
+  "D203",
+  "D213",
+  # Conflicts with ruff formatter.
+  "COM812",
+  "ISC001",
+  # Structural gates harm agent-edited codebases.
+  "C901",     # cyclomatic complexity
+  "PLR0904",  # too many public methods
+  "PLR0911",  # too many return statements
+  "PLR0912",  # too many branches
+  "PLR0913",  # too many arguments
+  "PLR0914",  # too many local variables
+  "PLR0915",  # too many statements
+  "PLR0916",  # too many boolean expressions
+  "PLR0917",  # too many positional arguments
+  # Boilerplate-forcing rules that add indirection without value.
+  "TRY301",   # abstract raise to inner function
+  "BLE001",   # do not catch blind exception
+  "PLR2004",  # magic value in comparison
+]
+fixable = ["ALL"]
+unfixable = []
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*.py" = [
+  "S101",     # assert IS testing
+  "D100",     # test modules self-document via test names
+  "D102",     # test methods self-document via test names
+  "D103",     # test functions self-document via test names
+  "ANN001",   # test arg annotations optional
+  "ANN002",   # *args annotation optional in tests
+  "ANN003",   # **kwargs annotation optional in tests
+  "ANN202",   # test return annotations optional
+  "ANN401",   # Any acceptable in test stubs
+  "ARG001",   # unused fixture args
+  "ARG002",   # unused method args
+  "ERA001",   # test data comments look like commented-out code
+  "SLF001",   # tests verify private state by design
+  "TRY003",   # test error messages inline is fine
+  "EM101",    # test error messages as string literals
+]
+"scripts/**" = [
+  "T201",     # print is the output method for CLI scripts
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

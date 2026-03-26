@@ -1,0 +1,25 @@
+default_language_version:
+  python: python3
+
+default_install_hook_types: [pre-commit]
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff (strict)
+        entry: uv run --extra dev ruff check --config ruff.toml --ignore-noqa
+        language: system
+        files: \.pyi?$
+
+      - id: ruff-format
+        name: ruff format (check)
+        entry: uv run --extra dev ruff format --check --config ruff.toml
+        language: system
+        files: \.pyi?$
+
+      - id: ty
+        name: ty (types)
+        entry: uv run --extra dev ty check
+        language: system
+        files: \.pyi?$

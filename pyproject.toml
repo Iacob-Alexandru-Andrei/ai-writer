@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A writing system that leverages Claude Code and Codex for structured document generation."
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 authors = [
     {name = "Iacob Alexandru Andrei"},
 ]
@@ -28,9 +28,35 @@ all = [
 nlp = [
     "spacy>=3.0",
 ]
+dev = [
+    "ruff>=0.11",
+    "ty>=0.0.1a7",
+    "pre-commit>=4.0",
+    "pytest>=8.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["lib"]
 
 [tool.setuptools.package-dir]
 "" = "lib"
+
+[tool.ty]
+
+[tool.ty.analysis]
+respect-type-ignore-comments = true
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[tool.ty.rules]
+all = "error"
+
+[tool.ty.terminal]
+error-on-warning = true
+output-format = "full"
+
+[tool.ty.src]
+include = ["lib/**/*.py", "scripts/**/*.py"]
+exclude = [".venv/**", "venv/**", "build/**"]
+respect-ignore-files = false

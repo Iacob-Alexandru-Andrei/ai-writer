@@ -13,7 +13,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
 
@@ -47,12 +46,11 @@ def install(project_dir: Path, claude_dir: Path) -> None:
             if dest.is_symlink() and dest.resolve() == src.resolve():
                 skipped.append(src.name)
                 continue
-            else:
-                print(f"  WARNING: {dest} already exists and points elsewhere — skipping")
-                skipped.append(src.name)
-                continue
+            print(f"  WARNING: {dest} already exists and points elsewhere — skipping")
+            skipped.append(src.name)
+            continue
 
-        os.symlink(src, dest)
+        dest.symlink_to(src)
         installed.append(src.name)
 
     if installed:
@@ -98,6 +96,7 @@ def uninstall(project_dir: Path, claude_dir: Path) -> None:
 
 
 def main() -> None:
+    """CLI entrypoint for installing or uninstalling slash commands."""
     parser = argparse.ArgumentParser(
         description="Install or uninstall ai-writer Claude Code slash commands."
     )
