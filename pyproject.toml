@@ -58,5 +58,5 @@ output-format = "full"
 
 [tool.ty.src]
 include = ["lib/**/*.py", "scripts/**/*.py"]
-exclude = [".venv/**", "venv/**", "build/**"]
+exclude = [".venv/**", "venv/**", "build/**", "lib/writing/integrations/dspy_signatures.py"]
 respect-ignore-files = false
