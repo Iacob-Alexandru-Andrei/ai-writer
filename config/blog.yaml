@@ -1,0 +1,16 @@
+sections:
+  - hook
+  - body
+  - conclusion
+
+constraints:
+  min_words: 1500
+  max_words: 2500
+  requires_meta_description: true
+
+output_format: markdown
+
+validation_rules:
+  min_sections: 2
+
+template_name: blog

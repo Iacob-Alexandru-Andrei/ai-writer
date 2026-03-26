@@ -1,0 +1,13 @@
+sections:
+  - post
+
+constraints:
+  max_chars: 3000
+  hook_max_chars: 210
+
+output_format: plaintext
+
+validation_rules:
+  max_chars: 3000
+
+template_name: linkedin

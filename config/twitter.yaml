@@ -1,0 +1,13 @@
+sections:
+  - thread
+
+constraints:
+  max_chars_per_tweet: 280
+  max_tweets: 15
+
+output_format: plaintext
+
+validation_rules:
+  max_chars_per_tweet: 280
+
+template_name: twitter
