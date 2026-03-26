@@ -8,11 +8,13 @@ and :func:`is_available` returns ``False``.
 
 from __future__ import annotations
 
+import contextlib
 import importlib
 import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    import types
     from collections.abc import Callable
 
 from writing.models import ContentType
@@ -23,19 +25,15 @@ logger = logging.getLogger(__name__)
 # Optional import
 # ---------------------------------------------------------------------------
 
-_DSPY_AVAILABLE: bool = False
-_dspy = None  # Will hold the `dspy` module when available.
-
 _INSTALL_HINT: str = (
     "dspy-ai is not installed. "
     "Install it with:  pip install ai-writer[all]"
 )
 
-try:
+_dspy: types.ModuleType | None = None
+
+with contextlib.suppress(ImportError):
     _dspy = importlib.import_module("dspy")
-    _DSPY_AVAILABLE = True
-except ImportError:
-    pass
 
 # ---------------------------------------------------------------------------
 # Descriptions (kept short to stay within line-length limits)
@@ -62,12 +60,12 @@ _DESC_THREAD = "Generated thread with tweet boundaries"
 # Signature classes (defined only when DSPy is importable)
 # ---------------------------------------------------------------------------
 
-if _DSPY_AVAILABLE:
-    _inp = _dspy.InputField  # type: ignore[union-attr]
-    _out = _dspy.OutputField  # type: ignore[union-attr]
+if _dspy is not None:
+    _inp = _dspy.InputField
+    _out = _dspy.OutputField
 
-    class PaperSectionSignature(  # type: ignore[misc]
-        _dspy.Signature,  # type: ignore[misc,name-defined]
+    class PaperSectionSignature(
+        _dspy.Signature,
     ):
         """Generate a section of an academic paper.
 
@@ -83,18 +81,18 @@ if _DSPY_AVAILABLE:
             citations_used: Comma-separated citation keys used.
         """
 
-        instruction: str = _inp(desc=_DESC_INSTRUCTION)  # type: ignore[name-defined]
-        style_profile: str = _inp(desc=_DESC_STYLE)  # type: ignore[name-defined]
-        section_name: str = _inp(desc=_DESC_SECTION)  # type: ignore[name-defined]
-        outline_context: str = _inp(desc=_DESC_OUTLINE)  # type: ignore[name-defined]
-        running_context: str = _inp(desc=_DESC_RUNNING)  # type: ignore[name-defined]
-        bibliography_hints: str = _inp(desc=_DESC_BIB)  # type: ignore[name-defined]
-        few_shot_examples: str = _inp(desc=_DESC_EXAMPLES)  # type: ignore[name-defined]
-        section_content: str = _out(desc=_DESC_CONTENT)  # type: ignore[name-defined]
-        citations_used: str = _out(desc=_DESC_CITATIONS)  # type: ignore[name-defined]
+        instruction: str = _inp(desc=_DESC_INSTRUCTION)
+        style_profile: str = _inp(desc=_DESC_STYLE)
+        section_name: str = _inp(desc=_DESC_SECTION)
+        outline_context: str = _inp(desc=_DESC_OUTLINE)
+        running_context: str = _inp(desc=_DESC_RUNNING)
+        bibliography_hints: str = _inp(desc=_DESC_BIB)
+        few_shot_examples: str = _inp(desc=_DESC_EXAMPLES)
+        section_content: str = _out(desc=_DESC_CONTENT)
+        citations_used: str = _out(desc=_DESC_CITATIONS)
 
-    class ThesisSectionSignature(  # type: ignore[misc]
-        _dspy.Signature,  # type: ignore[misc,name-defined]
+    class ThesisSectionSignature(
+        _dspy.Signature,
     ):
         """Generate a section of a thesis chapter.
 
@@ -111,19 +109,19 @@ if _DSPY_AVAILABLE:
             citations_used: Comma-separated citation keys used.
         """
 
-        instruction: str = _inp(desc=_DESC_INSTRUCTION)  # type: ignore[name-defined]
-        style_profile: str = _inp(desc=_DESC_STYLE)  # type: ignore[name-defined]
-        section_name: str = _inp(desc=_DESC_SECTION)  # type: ignore[name-defined]
-        outline_context: str = _inp(desc=_DESC_OUTLINE)  # type: ignore[name-defined]
-        running_context: str = _inp(desc=_DESC_RUNNING)  # type: ignore[name-defined]
-        bibliography_hints: str = _inp(desc=_DESC_BIB)  # type: ignore[name-defined]
-        chapter_context: str = _inp(desc=_DESC_CHAPTER)  # type: ignore[name-defined]
-        few_shot_examples: str = _inp(desc=_DESC_EXAMPLES)  # type: ignore[name-defined]
-        section_content: str = _out(desc=_DESC_CONTENT)  # type: ignore[name-defined]
-        citations_used: str = _out(desc=_DESC_CITATIONS)  # type: ignore[name-defined]
+        instruction: str = _inp(desc=_DESC_INSTRUCTION)
+        style_profile: str = _inp(desc=_DESC_STYLE)
+        section_name: str = _inp(desc=_DESC_SECTION)
+        outline_context: str = _inp(desc=_DESC_OUTLINE)
+        running_context: str = _inp(desc=_DESC_RUNNING)
+        bibliography_hints: str = _inp(desc=_DESC_BIB)
+        chapter_context: str = _inp(desc=_DESC_CHAPTER)
+        few_shot_examples: str = _inp(desc=_DESC_EXAMPLES)
+        section_content: str = _out(desc=_DESC_CONTENT)
+        citations_used: str = _out(desc=_DESC_CITATIONS)
 
-    class BlogSectionSignature(  # type: ignore[misc]
-        _dspy.Signature,  # type: ignore[misc,name-defined]
+    class BlogSectionSignature(
+        _dspy.Signature,
     ):
         """Generate a section of a blog post.
 
@@ -135,14 +133,14 @@ if _DSPY_AVAILABLE:
             section_content: Generated section body text.
         """
 
-        instruction: str = _inp(desc=_DESC_INSTRUCTION)  # type: ignore[name-defined]
-        style_profile: str = _inp(desc=_DESC_STYLE)  # type: ignore[name-defined]
-        section_name: str = _inp(desc=_DESC_SECTION)  # type: ignore[name-defined]
-        seo_keywords: str = _inp(desc=_DESC_SEO)  # type: ignore[name-defined]
-        section_content: str = _out(desc=_DESC_BLOG_CONTENT)  # type: ignore[name-defined]
+        instruction: str = _inp(desc=_DESC_INSTRUCTION)
+        style_profile: str = _inp(desc=_DESC_STYLE)
+        section_name: str = _inp(desc=_DESC_SECTION)
+        seo_keywords: str = _inp(desc=_DESC_SEO)
+        section_content: str = _out(desc=_DESC_BLOG_CONTENT)
 
-    class LinkedInPostSignature(  # type: ignore[misc]
-        _dspy.Signature,  # type: ignore[misc,name-defined]
+    class LinkedInPostSignature(
+        _dspy.Signature,
     ):
         """Generate a LinkedIn post.
 
@@ -153,13 +151,13 @@ if _DSPY_AVAILABLE:
             post_content: Generated LinkedIn post text.
         """
 
-        instruction: str = _inp(desc=_DESC_INSTRUCTION)  # type: ignore[name-defined]
-        style_profile: str = _inp(desc=_DESC_STYLE)  # type: ignore[name-defined]
-        key_points: str = _inp(desc=_DESC_POINTS)  # type: ignore[name-defined]
-        post_content: str = _out(desc=_DESC_POST)  # type: ignore[name-defined]
+        instruction: str = _inp(desc=_DESC_INSTRUCTION)
+        style_profile: str = _inp(desc=_DESC_STYLE)
+        key_points: str = _inp(desc=_DESC_POINTS)
+        post_content: str = _out(desc=_DESC_POST)
 
-    class TwitterThreadSignature(  # type: ignore[misc]
-        _dspy.Signature,  # type: ignore[misc,name-defined]
+    class TwitterThreadSignature(
+        _dspy.Signature,
     ):
         """Generate a Twitter/X thread.
 
@@ -171,11 +169,11 @@ if _DSPY_AVAILABLE:
             thread_content: Generated thread content with tweet boundaries.
         """
 
-        instruction: str = _inp(desc=_DESC_INSTRUCTION)  # type: ignore[name-defined]
-        style_profile: str = _inp(desc=_DESC_STYLE)  # type: ignore[name-defined]
-        key_points: str = _inp(desc=_DESC_POINTS)  # type: ignore[name-defined]
-        max_tweets: str = _inp(desc=_DESC_MAX_TWEETS)  # type: ignore[name-defined]
-        thread_content: str = _out(desc=_DESC_THREAD)  # type: ignore[name-defined]
+        instruction: str = _inp(desc=_DESC_INSTRUCTION)
+        style_profile: str = _inp(desc=_DESC_STYLE)
+        key_points: str = _inp(desc=_DESC_POINTS)
+        max_tweets: str = _inp(desc=_DESC_MAX_TWEETS)
+        thread_content: str = _out(desc=_DESC_THREAD)
 
 else:
     # ----- Stub classes when DSPy is NOT installed -----
@@ -261,7 +259,7 @@ def is_available() -> bool:
         ``True`` when the ``dspy`` package is importable,
         ``False`` otherwise.
     """
-    return _DSPY_AVAILABLE
+    return _dspy is not None
 
 
 def get_signature_for_type(content_type: ContentType) -> type:
@@ -308,7 +306,7 @@ def create_optimizer(
     Raises:
         ImportError: If DSPy is not installed.
     """
-    if not _DSPY_AVAILABLE:
+    if _dspy is None:
         raise ImportError(_INSTALL_HINT)
 
     def _default_metric(
@@ -320,4 +318,4 @@ def create_optimizer(
         return 1.0
 
     chosen_metric = metric_fn if metric_fn is not None else _default_metric
-    return _dspy.BootstrapFewShot(metric=chosen_metric)  # type: ignore[union-attr]
+    return _dspy.BootstrapFewShot(metric=chosen_metric)
