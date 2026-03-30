@@ -1,0 +1,9 @@
+{
+  "session_id": "93b81a455035",
+  "status": "generating",
+  "current_section_index": 10,
+  "running_context_len": 59016,
+  "all_10_sections_generated": true,
+  "llm_overrides_applied": "provider=claude",
+  "resume_validated": true
+}

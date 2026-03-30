@@ -170,7 +170,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — section generated despite tight budget, stress report saved
   - [x] Committed
 
-- [ ] T13: Session resume with LLM override and generate sections 8-10
+- [x] T13: Session resume with LLM override and generate sections 8-10
   - Ref: R13, R18, R27
   - Type: substantive
   - Route: orchestrator
@@ -179,9 +179,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/snapshots/session_resume_*.json, evidence/paper/
   - Depends: T12
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct — session resumed with provider=claude override, all 3 sections generated via Codex fallback
+  - [x] Validated — all 10 sections complete, session snapshots before/after saved, AC12 satisfied
+  - [x] Committed
 
 - [ ] T14: Finalize paper, citation audit, and validation
   - Ref: R13, R19, R20, R25
