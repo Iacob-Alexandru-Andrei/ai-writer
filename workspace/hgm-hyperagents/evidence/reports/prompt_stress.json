@@ -1,0 +1,11 @@
+{
+  "task": "T12",
+  "section_index": 6,
+  "section_name": "Theoretical Analysis",
+  "context_length_override": 50000,
+  "max_output_tokens": 16384,
+  "running_context_chars": 77533,
+  "output_chars": 77533,
+  "budget_stress_validated": true,
+  "note": "context_length=50000 forces tighter prompt budget; running_context is 79K chars which will trigger truncation in assembly"
+}

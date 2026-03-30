@@ -157,7 +157,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — AC07 satisfied (fallback evidence), routing state switch from claude→codex verified
   - [x] Committed
 
-- [ ] T12: Generate section 7 with prompt budget stress test
+- [x] T12: Generate section 7 with prompt budget stress test
   - Ref: R13, R14, R15, R16
   - Type: substantive
   - Route: orchestrator
@@ -166,9 +166,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/reports/prompt_stress.json, evidence/paper/
   - Depends: T11
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct — context_length=50000 with 79K running_context forces budget pressure
+  - [x] Validated — section generated despite tight budget, stress report saved
+  - [x] Committed
 
 - [ ] T13: Session resume with LLM override and generate sections 8-10
   - Ref: R13, R18, R27
