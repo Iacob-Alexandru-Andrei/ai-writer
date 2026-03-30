@@ -40,7 +40,8 @@ def test_claude_cli_backend_default_command_has_no_model_flag() -> None:
     assert result == "generated text"
     assert cmd[:2] == ["claude", "-p"]
     assert "--model" not in cmd
-    assert cmd[cmd.index("--max-tokens") + 1] == "16384"
+    # claude -p does not support --max-tokens; budget enforced at prompt assembly
+    assert "--max-tokens" not in cmd
     assert cmd[-1] == "Write an introduction."
 
 
@@ -55,15 +56,17 @@ def test_claude_cli_backend_includes_model_flag_when_model_name_is_set() -> None
     assert cmd[cmd.index("--model") + 1] == "haiku"
 
 
-def test_claude_cli_backend_uses_custom_max_output_tokens() -> None:
+def test_claude_cli_backend_stores_max_output_tokens() -> None:
     backend = ClaudeCLIBackend(max_output_tokens=2048)
+    # max_output_tokens is stored for prompt budget calculation but not passed to CLI
+    assert backend.max_output_tokens == 2048
 
     completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="ok", stderr="")
     with patch("writing.backends.subprocess.run", return_value=completed) as mock_run:
         backend.generate("Prompt")
 
     cmd = mock_run.call_args.args[0]
-    assert cmd[cmd.index("--max-tokens") + 1] == "2048"
+    assert "--max-tokens" not in cmd
 
 
 def test_codex_backend_command_includes_output_file_full_auto_and_prompt() -> None:
