@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from writing.backends import get_backend
@@ -21,6 +22,7 @@ from writing.citation_audit import audit_citations
 from writing.corpus import Corpus
 from writing.fewshot import select_examples
 from writing.integrations.storm_adapter import StormAdapter
+from writing.llm_config import OutlineEngine, StageType
 from writing.models import (
     ContentType,
     GenerationResult,
@@ -59,6 +61,7 @@ class LongFormWorkflow:
         self,
         *,
         session_manager: SessionManager | None = None,
+        backend_resolver: Callable[[StageType], LLMBackend] | None = None,
         backend: LLMBackend | None = None,
         settings: WriterSettings | None = None,
     ) -> None:
@@ -67,6 +70,8 @@ class LongFormWorkflow:
         Args:
             session_manager: Session persistence manager.  When *None*,
                 a new ``SessionManager`` is created with *settings*.
+            backend_resolver: Optional callable that resolves the LLM
+                backend lazily for each stage.
             backend: LLM backend for text generation.  When *None*,
                 ``get_backend()`` selects the default.
             settings: Writer settings.  When *None*, settings are loaded
@@ -76,7 +81,12 @@ class LongFormWorkflow:
         self._session_manager: SessionManager = (
             session_manager if session_manager is not None else SessionManager(self._settings)
         )
-        self._backend: LLMBackend = backend if backend is not None else get_backend()
+        self._backend_resolver = backend_resolver
+        self._backend: LLMBackend | None = (
+            backend if backend is not None else None
+        )
+        if self._backend is None and self._backend_resolver is None:
+            self._backend = get_backend()
         self._example_files: dict[str, list[str]] = {}
 
     # ------------------------------------------------------------------
@@ -124,7 +134,7 @@ class LongFormWorkflow:
 
         # Load corpus and run style analysis.
         corpus = self._load_corpus(session)
-        profile = analyze_style(corpus, self._backend)
+        profile = analyze_style(corpus, self._get_backend(StageType.STYLE_ANALYSIS))
         self._session_manager.set_style_profile(session, profile)
         self._session_manager.set_status(session, SessionStatus.ANALYZING)
 
@@ -134,9 +144,11 @@ class LongFormWorkflow:
     def generate_outline(self, session: SessionState) -> list[str]:
         """Generate a document outline for the session.
 
-        Uses the STORM adapter when available; otherwise prompts the LLM
-        directly.  Updates the session with the outline and sets status
-        to ``OUTLINING``.
+        The outline engine is controlled by ``self._settings.llm.outline_engine``:
+        ``LLM`` forces direct LLM generation, ``STORM`` forces STORM with
+        no fallback, and ``AUTO`` preserves the existing STORM-then-LLM
+        fallback behavior. Updates the session with the outline and sets
+        status to ``OUTLINING``.
 
         Args:
             session: An active session (typically in ``ANALYZING`` status).
@@ -146,9 +158,20 @@ class LongFormWorkflow:
         """
         corpus = self._load_corpus(session)
         corpus_context = "\n\n".join(cf.normalized_content for cf in corpus.files)
+        outline_engine = self._settings.llm.outline_engine
 
-        if StormAdapter.is_available():
-            logger.info("Using STORM adapter for outline generation")
+        if outline_engine is OutlineEngine.LLM:
+            logger.info("Outline engine set to LLM; generating outline via LLM")
+            outline = self._generate_outline_via_llm(session, corpus_context)
+        elif outline_engine is OutlineEngine.STORM:
+            logger.info("Outline engine set to STORM; generating outline via STORM")
+            adapter = StormAdapter(web_search_enabled=False)
+            outline = adapter.generate_outline(
+                topic=session.instruction,
+                corpus_context=corpus_context,
+            )
+        elif StormAdapter.is_available():
+            logger.info("Outline engine set to AUTO; using STORM adapter for outline generation")
             adapter = StormAdapter(web_search_enabled=False)
             try:
                 outline = adapter.generate_outline(
@@ -156,10 +179,10 @@ class LongFormWorkflow:
                     corpus_context=corpus_context,
                 )
             except (ImportError, RuntimeError):
-                logger.warning("STORM outline failed, falling back to LLM")
+                logger.warning("STORM outline failed in AUTO mode, falling back to LLM")
                 outline = self._generate_outline_via_llm(session, corpus_context)
         else:
-            logger.info("STORM not available, generating outline via LLM")
+            logger.info("Outline engine set to AUTO and STORM is not available; generating outline via LLM")
             outline = self._generate_outline_via_llm(session, corpus_context)
 
         self._session_manager.set_outline(session, outline)
@@ -203,6 +226,7 @@ class LongFormWorkflow:
         corpus = self._load_corpus(session)
         bibliography = self._load_bibliography(session)
         examples = self._select_examples(session, corpus)
+        spec = self._settings.llm.for_stage(StageType.SECTION_GENERATION)
 
         prompt = assemble_prompt(
             content_type=session.content_type,
@@ -214,9 +238,12 @@ class LongFormWorkflow:
             bibliography=bibliography,
             outline=session.outline,
             settings=self._settings,
+            context_length=spec.context_length,
+            max_output_tokens=spec.max_output_tokens,
         )
 
-        content = self._backend.generate(prompt.user_prompt, system=prompt.system_prompt or None)
+        backend = self._get_backend(StageType.SECTION_GENERATION)
+        content = backend.generate(prompt.user_prompt, system=prompt.system_prompt or None)
 
         result = GenerationResult(
             content=content,
@@ -296,6 +323,15 @@ class LongFormWorkflow:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _get_backend(self, stage: StageType) -> LLMBackend:
+        """Return the configured backend for a workflow stage."""
+        if self._backend is not None:
+            return self._backend
+        if self._backend_resolver is None:
+            msg = "No backend or backend resolver configured."
+            raise RuntimeError(msg)
+        return self._backend_resolver(stage)
 
     def _load_corpus(self, session: SessionState) -> Corpus:
         """Load and return a ``Corpus`` from the session's corpus directory.
@@ -401,7 +437,8 @@ class LongFormWorkflow:
             f"Return ONLY a numbered list of section titles, one per line. "
             f"Do not include any other text."
         )
-        response = self._backend.generate(prompt)
+        backend = self._get_backend(StageType.OUTLINE)
+        response = backend.generate(prompt)
         return self._parse_outline_response(response)
 
     @staticmethod

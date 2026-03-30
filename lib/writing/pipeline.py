@@ -11,7 +11,8 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from writing.backends import get_backend
+from writing.backends import resolve_backend
+from writing.llm_config import StageType
 from writing.models import ContentType, GenerationResult, SessionState
 from writing.session import SessionManager
 from writing.settings import WriterSettings, load_settings
@@ -53,28 +54,53 @@ class Pipeline:
         *,
         backend: LLMBackend | None = None,
         settings: WriterSettings | None = None,
+        llm_overrides: dict[str, str] | None = None,
     ) -> None:
         """Initialise the pipeline with optional dependency overrides.
 
         Args:
             backend: LLM backend for text generation.  When *None*,
-                ``get_backend()`` selects the default.
+                backends are resolved lazily per stage.
             settings: Writer settings.  When *None*, settings are loaded
                 via ``load_settings()``.
+            llm_overrides: Optional LLM routing overrides passed through
+                to ``load_settings()`` when *backend* is *None* and
+                *settings* is not provided.
         """
-        self._settings: WriterSettings = settings if settings is not None else load_settings()
-        self._backend: LLMBackend = backend if backend is not None else get_backend()
+        if backend is not None:
+            self._explicit_backend: LLMBackend | None = backend
+            self._settings = settings if settings is not None else load_settings()
+        else:
+            self._explicit_backend = None
+            self._settings = (
+                settings
+                if settings is not None
+                else load_settings(llm_overrides=llm_overrides)
+            )
+        self._llm_settings = self._settings.llm
         self._session_manager = SessionManager(settings=self._settings)
-        self._long_form = LongFormWorkflow(
-            session_manager=self._session_manager,
-            backend=self._backend,
-            settings=self._settings,
-        )
-        self._short_form = ShortFormWorkflow(
-            session_manager=self._session_manager,
-            backend=self._backend,
-            settings=self._settings,
-        )
+        if self._explicit_backend is not None:
+            self._long_form = LongFormWorkflow(
+                session_manager=self._session_manager,
+                backend=self._explicit_backend,
+                settings=self._settings,
+            )
+            self._short_form = ShortFormWorkflow(
+                session_manager=self._session_manager,
+                backend=self._explicit_backend,
+                settings=self._settings,
+            )
+        else:
+            self._long_form = LongFormWorkflow(
+                session_manager=self._session_manager,
+                backend_resolver=self._resolve_backend_for_stage,
+                settings=self._settings,
+            )
+            self._short_form = ShortFormWorkflow(
+                session_manager=self._session_manager,
+                backend_resolver=self._resolve_backend_for_stage,
+                settings=self._settings,
+            )
 
     # ------------------------------------------------------------------
     # Public API
@@ -114,19 +140,26 @@ class Pipeline:
                     f"a corpus_dir, but None was provided."
                 )
                 raise ValueError(msg)
-            return self._long_form.start(
+            session = self._long_form.start(
                 content_type=content_type,
                 instruction=instruction,
                 corpus_dir=corpus_dir,
                 bibliography_path=bibliography_path,
                 example_files=example_files,
             )
-        return self._short_form.start(
-            content_type=content_type,
-            instruction=instruction,
-            corpus_dir=corpus_dir,
-            example_files=example_files,
-        )
+        else:
+            session = self._short_form.start(
+                content_type=content_type,
+                instruction=instruction,
+                corpus_dir=corpus_dir,
+                example_files=example_files,
+            )
+
+        if self._explicit_backend is None:
+            session.llm_settings = self._llm_settings
+            self._session_manager.save(session)
+
+        return session
 
     def generate_outline(self, session: SessionState) -> list[str]:
         """Generate a document outline for a long-form session.
@@ -238,6 +271,12 @@ class Pipeline:
         workflow = self._get_workflow(session.content_type)
         return workflow.get_status(session)
 
+    def _resolve_backend_for_stage(self, stage: StageType) -> LLMBackend:
+        """Resolve the backend for a workflow stage."""
+        if self._explicit_backend is not None:
+            return self._explicit_backend
+        return resolve_backend(stage, self._llm_settings)
+
     def resume_session(self, session_id: str) -> SessionState:
         """Load and return a previously persisted session.
 
@@ -250,7 +289,10 @@ class Pipeline:
         Raises:
             FileNotFoundError: If the session does not exist on disk.
         """
-        return self._session_manager.load(session_id)
+        session = self._session_manager.load(session_id)
+        if session.llm_settings is not None and self._explicit_backend is None:
+            self._llm_settings = session.llm_settings
+        return session
 
     def list_sessions(self) -> list[dict[str, str]]:
         """Return summary metadata for all persisted sessions.

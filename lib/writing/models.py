@@ -13,6 +13,7 @@ from pathlib import Path  # noqa: TC003 - Pydantic needs this at runtime
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
+from writing.llm_config import LLMSettings
 
 
 class ContentType(enum.Enum):
@@ -146,6 +147,7 @@ class SessionState(BaseModel):
         outline: Generated document outline (list of section titles).
         sections: Generated section results accumulated during generation.
         running_context: Rolling summary passed between generation steps.
+        llm_settings: Snapshot of the session's resolved LLM configuration.
         status: Current lifecycle stage.
         current_section_index: Index of the section being generated.
         created_at: Timestamp of session creation.
@@ -161,6 +163,7 @@ class SessionState(BaseModel):
     outline: list[str] = Field(default_factory=list)
     sections: list[GenerationResult] = Field(default_factory=list)
     running_context: str = ""
+    llm_settings: LLMSettings | None = None
     status: SessionStatus = SessionStatus.ANALYZING
     current_section_index: int = 0
     created_at: datetime = Field(default_factory=_utc_now)

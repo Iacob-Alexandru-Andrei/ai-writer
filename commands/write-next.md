@@ -1,16 +1,17 @@
 ---
 description: "Continue writing the next section"
-argument-hint: "[session-id]"
+argument-hint: "[session-id] [--llm key=value ...]"
 ---
 
-Advance the writing session to the next section. `$ARGUMENTS` is an optional session ID; if omitted, use the most recent session.
+Advance the writing session to the next section. `$ARGUMENTS` is an optional session ID; if omitted, use the most recent session. Optional `--llm` flags override the session's stored LLM config for this invocation.
 
 ### 1. Load session
 
 ```bash
 source $HOME/.claude/lib/launcher.sh && claude_run_python '
 import json; from writing.pipeline import Pipeline; from writing.session import SessionManager
-p = Pipeline(); sid = "<SESSION_ID>"
+llm_overrides = {k: v for k, v in [x.split("=", 1) for x in "<LLM_OVERRIDES>".split(",") if "=" in x]} if "<LLM_OVERRIDES>" else None
+p = Pipeline(llm_overrides=llm_overrides); sid = "<SESSION_ID>"
 s = p.resume_session(sid) if sid else SessionManager().get_latest()
 if not s: print("ERROR: No active session. Start one with /write."); exit(1)
 print(json.dumps(p.get_status(s), indent=2, default=str))

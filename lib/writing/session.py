@@ -12,6 +12,7 @@ import shutil
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+from writing.llm_config import LLMSettings
 from writing.models import ContentType, SessionState, SessionStatus
 from writing.settings import WriterSettings, load_settings
 
@@ -54,6 +55,7 @@ class SessionManager:
         instruction: str,
         corpus_dir: Path | None = None,
         bibliography_path: Path | None = None,
+        llm_settings: LLMSettings | None = None,
     ) -> SessionState:
         """Create a new session, persist it, and return the state.
 
@@ -62,6 +64,7 @@ class SessionManager:
             instruction: User-provided writing instruction or topic.
             corpus_dir: Optional path to the reference-document directory.
             bibliography_path: Optional path to a BibTeX file.
+            llm_settings: Optional snapshot of the resolved LLM settings.
 
         Returns:
             A freshly initialised ``SessionState``.
@@ -71,6 +74,7 @@ class SessionManager:
             instruction=instruction,
             corpus_dir=corpus_dir,
             bibliography_path=bibliography_path,
+            llm_settings=llm_settings,
         )
         self.save(session)
         return session
