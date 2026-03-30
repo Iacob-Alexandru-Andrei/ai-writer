@@ -103,8 +103,8 @@ class ClaudeCLIBackend(LLMBackend):
         cmd: list[str] = ["claude", "-p"]
         if self.model_name:
             cmd.extend(["--model", self.model_name])
-        if self.max_output_tokens:
-            cmd.extend(["--max-tokens", str(self.max_output_tokens)])
+        # Note: claude -p does not support --max-tokens; token budget is
+        # enforced at the prompt-assembly level via self.max_output_tokens.
         if system:
             cmd.extend(["--system-prompt", system])
         cmd.append(prompt)
@@ -357,9 +357,7 @@ def resolve_backend(stage: StageType, settings: LLMSettings) -> LLMBackend:
 
     primary = _build_backend_for_provider(provider_name, spec)
     secondary_provider = (
-        Provider.CLAUDE.value
-        if provider_name == Provider.CODEX.value
-        else Provider.CODEX.value
+        Provider.CLAUDE.value if provider_name == Provider.CODEX.value else Provider.CODEX.value
     )
     secondary = _build_backend_for_provider(secondary_provider, spec)
     return FallbackBackend(primary, secondary)

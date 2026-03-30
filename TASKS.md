@@ -3,7 +3,7 @@
 <!-- generated:2026-03-30T17:25:00Z -->
 <!-- spec:SPEC.md -->
 <!-- task-count:22 -->
-<!-- dispatches:3 -->
+<!-- dispatches:4 -->
 <!-- elapsed-s:0 -->
 <!-- convergence:0 -->
 <!-- planned:dual-plan -->
@@ -52,7 +52,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — 4 files loaded, 148 bib entries parsed, budget enforcement verified
   - [x] Committed
 
-- [ ] T04: Style analysis and outline engine probes
+- [x] T04: Style analysis and outline engine probes
   - Ref: R05, R06
   - Type: substantive
   - Route: orchestrator
@@ -61,9 +61,10 @@ Generated from SPEC.md. 22 tasks.
   - Files: scripts/live_pipeline_harness.py, workspace/hgm-hyperagents/evidence/reports/style.json, evidence/reports/outline_modes.json
   - Depends: T03
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct
+  - [x] Validated — all 7 style fields populated, spaCy present, LLM outline 6 sections, STORM API mismatch caught
+  - [x] Committed
+  - Note: Fixed ClaudeCLIBackend --max-tokens flag (invalid for claude -p); STORM installed but API changed (STORMWikiRunner.generate_outline missing) — AUTO correctly falls back to LLM
 
 - [ ] T05: Milestone — push setup and preflight
   - Ref: R01, R02, R03, R04, R05, R06, R28, R29

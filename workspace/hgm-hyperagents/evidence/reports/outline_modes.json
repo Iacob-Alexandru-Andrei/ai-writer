@@ -1,0 +1,36 @@
+{
+  "storm_available": true,
+  "modes": {
+    "storm": {
+      "error": "STORM outline generation failed for topic 'Self-Improving Multi-Agent Systems': type object 'STORMWikiRunner' has no attribute 'generate_outline'",
+      "success": false
+    },
+    "storm_simple": {
+      "sections": [
+        "Introduction",
+        "Background",
+        "Methods",
+        "Results",
+        "Conclusion"
+      ],
+      "success": true
+    },
+    "llm": {
+      "sections": [
+        "Introduction",
+        "Background",
+        "Methods",
+        "Analysis",
+        "Discussion",
+        "Conclusion"
+      ],
+      "success": true,
+      "count": 6
+    },
+    "auto": {
+      "configured": true,
+      "storm_would_be_tried_first": true,
+      "fallback_to_llm": true
+    }
+  }
+}
