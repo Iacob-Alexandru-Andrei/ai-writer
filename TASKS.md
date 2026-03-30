@@ -183,7 +183,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — all 10 sections complete, session snapshots before/after saved, AC12 satisfied
   - [x] Committed
 
-- [ ] T14: Finalize paper, citation audit, and validation
+- [x] T14: Finalize paper, citation audit, and validation
   - Ref: R13, R19, R20, R25
   - Type: substantive
   - Route: orchestrator
@@ -192,9 +192,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/paper/final_paper.md, evidence/reports/citation_audit.json, evidence/reports/paper_validation.json
   - Depends: T13
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct — finalize, citation audit, validation, CSW all executed
+  - [x] Validated — 668K chars, 54 citations (53 verified), validation passed, CSW revise 2116 chars
+  - [x] Committed
 
 - [ ] T15: Milestone — push complete paper
   - Ref: R13, R19, R20
