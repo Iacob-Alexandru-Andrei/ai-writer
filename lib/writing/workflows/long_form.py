@@ -22,7 +22,7 @@ from writing.citation_audit import audit_citations
 from writing.corpus import Corpus
 from writing.fewshot import select_examples
 from writing.integrations.storm_adapter import StormAdapter
-from writing.llm_config import StageType
+from writing.llm_config import OutlineEngine, StageType
 from writing.models import (
     ContentType,
     GenerationResult,
@@ -144,9 +144,11 @@ class LongFormWorkflow:
     def generate_outline(self, session: SessionState) -> list[str]:
         """Generate a document outline for the session.
 
-        Uses the STORM adapter when available; otherwise prompts the LLM
-        directly.  Updates the session with the outline and sets status
-        to ``OUTLINING``.
+        The outline engine is controlled by ``self._settings.llm.outline_engine``:
+        ``LLM`` forces direct LLM generation, ``STORM`` forces STORM with
+        no fallback, and ``AUTO`` preserves the existing STORM-then-LLM
+        fallback behavior. Updates the session with the outline and sets
+        status to ``OUTLINING``.
 
         Args:
             session: An active session (typically in ``ANALYZING`` status).
@@ -156,9 +158,20 @@ class LongFormWorkflow:
         """
         corpus = self._load_corpus(session)
         corpus_context = "\n\n".join(cf.normalized_content for cf in corpus.files)
+        outline_engine = self._settings.llm.outline_engine
 
-        if StormAdapter.is_available():
-            logger.info("Using STORM adapter for outline generation")
+        if outline_engine is OutlineEngine.LLM:
+            logger.info("Outline engine set to LLM; generating outline via LLM")
+            outline = self._generate_outline_via_llm(session, corpus_context)
+        elif outline_engine is OutlineEngine.STORM:
+            logger.info("Outline engine set to STORM; generating outline via STORM")
+            adapter = StormAdapter(web_search_enabled=False)
+            outline = adapter.generate_outline(
+                topic=session.instruction,
+                corpus_context=corpus_context,
+            )
+        elif StormAdapter.is_available():
+            logger.info("Outline engine set to AUTO; using STORM adapter for outline generation")
             adapter = StormAdapter(web_search_enabled=False)
             try:
                 outline = adapter.generate_outline(
@@ -166,10 +179,10 @@ class LongFormWorkflow:
                     corpus_context=corpus_context,
                 )
             except (ImportError, RuntimeError):
-                logger.warning("STORM outline failed, falling back to LLM")
+                logger.warning("STORM outline failed in AUTO mode, falling back to LLM")
                 outline = self._generate_outline_via_llm(session, corpus_context)
         else:
-            logger.info("STORM not available, generating outline via LLM")
+            logger.info("Outline engine set to AUTO and STORM is not available; generating outline via LLM")
             outline = self._generate_outline_via_llm(session, corpus_context)
 
         self._session_manager.set_outline(session, outline)
@@ -424,7 +437,8 @@ class LongFormWorkflow:
             f"Return ONLY a numbered list of section titles, one per line. "
             f"Do not include any other text."
         )
-        response = self._get_backend(StageType.OUTLINE).generate(prompt)
+        backend = self._get_backend(StageType.OUTLINE)
+        response = backend.generate(prompt)
         return self._parse_outline_response(response)
 
     @staticmethod
