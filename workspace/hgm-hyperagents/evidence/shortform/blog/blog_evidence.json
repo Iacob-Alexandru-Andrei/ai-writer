@@ -1,0 +1,19 @@
+{
+  "session_id": "07641c9927e7",
+  "content_type": "blog",
+  "outline_sections": 72,
+  "outline": [
+    "OpenAI Codex v0.116.0 (research preview)",
+    "-------",
+    "workdir: /Users/iacobalexandru/projects/ai-writer",
+    "model: gpt-5.4",
+    "provider: openai",
+    "approval: never",
+    "sandbox: workspace-write [workdir, /tmp, $TMPDIR, /Users/iacobalexandru/.codex/memories]",
+    "reasoning effort: none",
+    "reasoning summaries: none",
+    "session id: 019d4013-281e-7fc1-a4cd-949c3429c644"
+  ],
+  "section_chars": 67733,
+  "backend": "CodexBackend (direct)"
+}

@@ -1,0 +1,41 @@
+{
+  "content_types": [
+    "paper",
+    "thesis",
+    "blog",
+    "linkedin",
+    "twitter"
+  ],
+  "registry_types": [
+    "ContentType.PAPER",
+    "ContentType.THESIS",
+    "ContentType.BLOG",
+    "ContentType.LINKEDIN",
+    "ContentType.TWITTER"
+  ],
+  "config_paper": "sections=['abstract', 'introduction', 'related_work', 'methodology', 'results', 'discussion', 'concl",
+  "template_paper": {
+    "chars": 970,
+    "has_placeholders": true
+  },
+  "config_thesis": "sections=['introduction', 'literature_review', 'methodology', 'results', 'discussion', 'conclusion']",
+  "template_thesis": {
+    "chars": 971,
+    "has_placeholders": true
+  },
+  "config_blog": "sections=['hook', 'body', 'conclusion'] constraints={'min_words': 1500, 'max_words': 2500, 'requires",
+  "template_blog": {
+    "chars": 1114,
+    "has_placeholders": true
+  },
+  "config_linkedin": "sections=['post'] constraints={'max_chars': 3000, 'hook_max_chars': 210} output_format='plaintext' v",
+  "template_linkedin": {
+    "chars": 913,
+    "has_placeholders": true
+  },
+  "config_twitter": "sections=['thread'] constraints={'max_chars_per_tweet': 280, 'max_tweets': 15} output_format='plaint",
+  "template_twitter": {
+    "chars": 979,
+    "has_placeholders": true
+  }
+}
