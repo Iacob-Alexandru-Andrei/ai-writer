@@ -273,7 +273,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated
   - [x] Committed
 
-- [ ] T21: Spec coverage audit and evidence assembly
+- [x] T21: Spec coverage audit and evidence assembly
   - Ref: R01-R29
   - Type: substantive
   - Route: orchestrator
@@ -282,9 +282,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/index.md, evidence/manifest.json
   - Depends: T16, T17, T18, T19, T20
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct — 29/29 requirements covered, 43 evidence files, coverage matrix built
+  - [x] Validated — pytest 234 passed 3/3 runs
+  - [x] Committed
 
 - [ ] T22: Final sign-off
   - Ref: R01-R29

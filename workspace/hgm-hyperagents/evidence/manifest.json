@@ -1,0 +1,289 @@
+{
+  "coverage": {
+    "R01": {
+      "description": "Environment setup",
+      "tasks": [
+        "T01",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R02": {
+      "description": "Corpus ingestion and LaTeX normalization",
+      "tasks": [
+        "T03",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R03": {
+      "description": "Bibliography parsing",
+      "tasks": [
+        "T03",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R04": {
+      "description": "Few-shot example system",
+      "tasks": [
+        "T03",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R05": {
+      "description": "Style analysis with spaCy metrics",
+      "tasks": [
+        "T04",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R06": {
+      "description": "Outline engine (STORM/LLM/AUTO)",
+      "tasks": [
+        "T04",
+        "T05",
+        "T07"
+      ],
+      "covered": true
+    },
+    "R07": {
+      "description": "Config precedence (CLI > env > YAML)",
+      "tasks": [
+        "T06",
+        "T08"
+      ],
+      "covered": true
+    },
+    "R08": {
+      "description": "CodexBackend provider",
+      "tasks": [
+        "T09"
+      ],
+      "covered": true
+    },
+    "R09": {
+      "description": "Auto provider routing",
+      "tasks": [
+        "T11"
+      ],
+      "covered": true
+    },
+    "R10": {
+      "description": "FallbackBackend",
+      "tasks": [
+        "T11"
+      ],
+      "covered": true
+    },
+    "R11": {
+      "description": "Outline engine selection",
+      "tasks": [
+        "T06"
+      ],
+      "covered": true
+    },
+    "R12": {
+      "description": "YAML config schema",
+      "tasks": [
+        "T06"
+      ],
+      "covered": true
+    },
+    "R13": {
+      "description": "Slash command updates",
+      "tasks": [
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15"
+      ],
+      "covered": true
+    },
+    "R14": {
+      "description": "Prompt budget integration",
+      "tasks": [
+        "T08",
+        "T12"
+      ],
+      "covered": true
+    },
+    "R15": {
+      "description": "Cascading truncation",
+      "tasks": [
+        "T12"
+      ],
+      "covered": true
+    },
+    "R16": {
+      "description": "Running context growth",
+      "tasks": [
+        "T08",
+        "T09",
+        "T12"
+      ],
+      "covered": true
+    },
+    "R17": {
+      "description": "Integration adapters (DSPy, Instructor, OpenDraft)",
+      "tasks": [
+        "T20"
+      ],
+      "covered": true
+    },
+    "R18": {
+      "description": "Session resume with LLM override",
+      "tasks": [
+        "T13"
+      ],
+      "covered": true
+    },
+    "R19": {
+      "description": "Citation audit",
+      "tasks": [
+        "T14",
+        "T15"
+      ],
+      "covered": true
+    },
+    "R20": {
+      "description": "Content validation",
+      "tasks": [
+        "T14",
+        "T15"
+      ],
+      "covered": true
+    },
+    "R21": {
+      "description": "Blog content type",
+      "tasks": [
+        "T16"
+      ],
+      "covered": true
+    },
+    "R22": {
+      "description": "LinkedIn content type",
+      "tasks": [
+        "T17"
+      ],
+      "covered": true
+    },
+    "R23": {
+      "description": "Twitter content type",
+      "tasks": [
+        "T18"
+      ],
+      "covered": true
+    },
+    "R24": {
+      "description": "Thesis content type",
+      "tasks": [
+        "T19"
+      ],
+      "covered": true
+    },
+    "R25": {
+      "description": "CSW iterative revision",
+      "tasks": [
+        "T14",
+        "T20"
+      ],
+      "covered": true
+    },
+    "R26": {
+      "description": "ContentTypeRegistry",
+      "tasks": [
+        "T20"
+      ],
+      "covered": true
+    },
+    "R27": {
+      "description": "Paper generation end-to-end",
+      "tasks": [
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T13",
+        "T16",
+        "T17",
+        "T18",
+        "T19",
+        "T20"
+      ],
+      "covered": true
+    },
+    "R28": {
+      "description": "Evidence directory structure",
+      "tasks": [
+        "T01",
+        "T05"
+      ],
+      "covered": true
+    },
+    "R29": {
+      "description": "write-next.md llm_overrides fix",
+      "tasks": [
+        "T02",
+        "T05"
+      ],
+      "covered": true
+    }
+  },
+  "all_covered": true,
+  "uncovered": [],
+  "evidence_files": [
+    "inputs/references.md",
+    "logs/codex_sections_4_5.json",
+    "paper/final_paper.md",
+    "paper/section_00_abstract.md",
+    "paper/section_01_introduction.md",
+    "paper/section_02_preliminaries_and_related_work.md",
+    "paper/section_03_from_single_agent_self_improvement_to_clade_metapr.md",
+    "paper/section_04_multi_agent_recursive_self_improvement_and_the_fro.md",
+    "paper/section_05_hyperagent_architectures.md",
+    "paper/section_06_theoretical_analysis.md",
+    "paper/section_07_experimental_framework_and_evaluation.md",
+    "paper/section_08_discussion_and_open_problems.md",
+    "paper/section_09_conclusion.md",
+    "reports/bibliography.json",
+    "reports/citation_audit.json",
+    "reports/corpus.json",
+    "reports/csw_revise.json",
+    "reports/fallback_auto.json",
+    "reports/fewshot.json",
+    "reports/integrations.json",
+    "reports/outline_modes.json",
+    "reports/paper_validation.json",
+    "reports/prompt_budget.json",
+    "reports/prompt_stress.json",
+    "reports/registry.json",
+    "reports/session_manager.json",
+    "reports/style.json",
+    "shortform/blog/blog_evidence.json",
+    "shortform/blog/blog_post.md",
+    "shortform/linkedin/linkedin_evidence.json",
+    "shortform/linkedin/linkedin_post.md",
+    "shortform/thesis/thesis_evidence.json",
+    "shortform/thesis/thesis_section.md",
+    "shortform/twitter/twitter_evidence.json",
+    "shortform/twitter/twitter_thread.md",
+    "snapshots/expose_for_grep/dgm_darwin_godel_machine.md",
+    "snapshots/expose_for_grep/hgm_huxley_godel_machine.md",
+    "snapshots/expose_for_grep/hyperagents.md",
+    "snapshots/expose_for_grep/recursive_scientist.md",
+    "snapshots/session_outline.json",
+    "snapshots/session_resume_after.json",
+    "snapshots/session_resume_before.json",
+    "snapshots/session_start.json"
+  ],
+  "total_evidence_files": 43
+}
