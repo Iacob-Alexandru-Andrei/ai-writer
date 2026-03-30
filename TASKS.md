@@ -1,4 +1,5 @@
-<!-- autonomy:active -->
+<!-- autonomy:complete -->
+<!-- verified:complete -->
 <!-- failures:0 -->
 <!-- generated:2026-03-30T17:25:00Z -->
 <!-- spec:SPEC.md -->
@@ -286,7 +287,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — pytest 234 passed 3/3 runs
   - [x] Committed
 
-- [ ] T22: Final sign-off
+- [x] T22: Final sign-off
   - Ref: R01-R29
   - Type: trivial
   - Route: orchestrator
@@ -295,7 +296,7 @@ Generated from SPEC.md. 22 tasks.
   - Files: (git operations)
   - Depends: T21
   - Parallel: none
-  - [ ] Committed
+  - [x] Committed — all 22 tasks complete, git clean (untracked: corpus data, .claude config, uv.lock), 234 tests pass
 
 ## Follow-Up Ideas
 
