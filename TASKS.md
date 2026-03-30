@@ -3,7 +3,7 @@
 <!-- generated:2026-03-30T17:25:00Z -->
 <!-- spec:SPEC.md -->
 <!-- task-count:22 -->
-<!-- dispatches:0 -->
+<!-- dispatches:2 -->
 <!-- elapsed-s:0 -->
 <!-- convergence:0 -->
 <!-- planned:dual-plan -->
@@ -13,7 +13,7 @@
 
 Generated from SPEC.md. 22 tasks.
 
-- [ ] T01: Environment setup and evidence directory
+- [x] T01: Environment setup and evidence directory
   - Ref: R01, R28
   - Type: trivial
   - Route: orchestrator
@@ -22,11 +22,11 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/ (new dirs)
   - Depends: none
   - Parallel: T02
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct
+  - [x] Validated
+  - [x] Committed
 
-- [ ] T02: Fix write-next.md llm_overrides propagation
+- [x] T02: Fix write-next.md llm_overrides propagation
   - Ref: R29
   - Type: trivial
   - Route: orchestrator
@@ -35,9 +35,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: commands/write-next.md
   - Depends: none
   - Parallel: T01
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct
+  - [x] Validated
+  - [x] Committed
 
 - [ ] T03: Corpus ingestion and LaTeX normalization preflight
   - Ref: R02, R03, R04

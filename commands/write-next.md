@@ -23,7 +23,8 @@ print(json.dumps(p.get_status(s), indent=2, default=str))
 ```bash
 source $HOME/.claude/lib/launcher.sh && claude_run_python '
 from writing.pipeline import Pipeline
-p = Pipeline(); s = p.resume_session("<SESSION_ID>")
+llm_overrides = {k: v for k, v in [x.split("=", 1) for x in "<LLM_OVERRIDES>".split(",") if "=" in x]} if "<LLM_OVERRIDES>" else None
+p = Pipeline(llm_overrides=llm_overrides); s = p.resume_session("<SESSION_ID>")
 print(p.generate_next(s).content)
 '
 ```
@@ -38,7 +39,8 @@ Present the section and ask user to **approve** or **reject with feedback**.
 ```bash
 source $HOME/.claude/lib/launcher.sh && claude_run_python '
 from writing.pipeline import Pipeline
-p = Pipeline(); s = p.resume_session("<SESSION_ID>")
+llm_overrides = {k: v for k, v in [x.split("=", 1) for x in "<LLM_OVERRIDES>".split(",") if "=" in x]} if "<LLM_OVERRIDES>" else None
+p = Pipeline(llm_overrides=llm_overrides); s = p.resume_session("<SESSION_ID>")
 print(p.regenerate(s, feedback="<FEEDBACK>").content)
 '
 ```
