@@ -1,0 +1,33 @@
+{
+  "session_id": "93b81a455035",
+  "status": "generating",
+  "current_section_index": 7,
+  "running_context_len": 77533,
+  "llm_settings": {
+    "default": {
+      "provider": "claude",
+      "model_name": "claude-sonnet-4-20250514",
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "style_analysis": {
+      "provider": "claude",
+      "model_name": null,
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "outline": {
+      "provider": "claude",
+      "model_name": null,
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "section_generation": {
+      "provider": "claude",
+      "model_name": null,
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "outline_engine": "auto"
+  }
+}

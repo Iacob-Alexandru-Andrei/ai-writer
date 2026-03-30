@@ -1,0 +1,92 @@
+{
+  "session_id": "93b81a455035",
+  "content_type": "paper",
+  "instruction": "Write a comprehensive academic paper titled \"Self-Improving Multi-Agent Systems: From Clade-Metaproductivity to Hyperagent Architectures\"\n\nThis paper synthesizes key ideas from recursive self-improvement research:\n1. Huxley Godel Machine (HGM) and Clade-Metaproductivity (CMP) - how populations of agents improve collectively\n2. Darwin Godel Machine (DGM) - open-ended archive exploration and evolutionary approaches  \n3. Multi-Agent Recursive Self-Improvement (MARS) - co-evolution with frozen critic problem\n4. Hyperagent architectures - self-referential meta-level modification\n5. The frozen critic problem and its implications\n\nThe paper should be suitable for a top-tier ML conference (ICLR/NeurIPS format).\nUse formal academic language with precise technical terminology.\nInclude proper citations in bracket notation [@key] referencing the bibliography.",
+  "corpus_dir": "workspace/hgm-hyperagents/corpus",
+  "bibliography_path": "workspace/hgm-hyperagents/corpus/paper.bib",
+  "style_profile": {
+    "vocabulary_level": "Advanced academic vocabulary with heavy technical terminology. The writing uses sophisticated domain-specific terms like \"self-referential,\" \"metacognitive self-modification,\" \"open-endedness,\" \"foundation models,\" and \"hyperagents.\" Despite the technical complexity, the vocabulary remains accessible to readers within the AI/ML research community through clear definitions and contextual explanations.",
+    "sentence_patterns": [
+      "Long, complex sentences with multiple subordinate clauses for technical precision",
+      "Short declarative sentences for emphasis and clarity of key points",
+      "Frequent parenthetical citations and references embedded within sentences",
+      "Balanced use of active and passive voice, with passive often used for describing processes",
+      "Compound-complex sentences that layer technical concepts systematically",
+      "Conditional and causal sentence structures (\"When X, then Y\" patterns)"
+    ],
+    "paragraph_structure": "Medium-length paragraphs (4-7 sentences typically) with clear deductive organization. Opens with topic sentences that state main claims, followed by supporting evidence, technical details, and examples. Paragraphs build from general principles to specific implementations, concluding with implications or connections to broader research themes. Strong logical flow with explicit transitions between ideas.",
+    "tone": "Formal, authoritative, and measured throughout. The tone maintains academic objectivity while presenting novel research contributions. Confident in technical claims but appropriately hedged with scientific language (\"suggest,\" \"indicate,\" \"demonstrate\"). Analytical rather than persuasive, focused on systematic presentation of evidence and findings.",
+    "opening_patterns": [
+      "Direct statement of research contributions (\"We introduce...\")",
+      "Contextual framing (\"Recent work has shown...\")",
+      "Problem identification (\"Current AI systems cannot...\")",
+      "Technical definitions (\"A hyperagent is defined as...\")",
+      "Methodological descriptions (\"The DGM-H operates by...\")",
+      "Results presentation (\"Experiments demonstrate...\")"
+    ],
+    "closing_patterns": [
+      "Implications for broader research (\"These results suggest...\")",
+      "Forward-looking research directions (\"Future work could...\")",
+      "Summary of key findings (\"Overall, our results show...\")",
+      "Connections to theoretical frameworks (\"This aligns with...\")",
+      "Practical applications (\"This enables...\")",
+      "Methodological advantages (\"This approach outperforms...\")"
+    ],
+    "structural_conventions": [
+      "Standard academic paper format with numbered sections and subsections",
+      "Author-date citation style with frequent in-text references",
+      "Technical definitions highlighted through formatting or explicit definition statements",
+      "Mathematical notation and algorithmic descriptions integrated into text",
+      "Extensive use of figures and tables for data presentation",
+      "Detailed appendices for implementation specifics and additional results",
+      "Cross-references to sections, figures, and appendices using numbered labels",
+      "Bullet points for listing technical specifications or experimental conditions"
+    ],
+    "raw_analysis": "Looking at this corpus of academic papers on self-improving AI systems, I'll analyze the writing style across the requested dimensions:\n\n### VOCABULARY LEVEL\nAdvanced academic vocabulary with heavy technical terminology. The writing uses sophisticated domain-specific terms like \"self-referential,\" \"metacognitive self-modification,\" \"open-endedness,\" \"foundation models,\" and \"hyperagents.\" Despite the technical complexity, the vocabulary remains accessible to readers within the AI/ML research community through clear definitions and contextual explanations.\n\n### SENTENCE PATTERNS\n- Long, complex sentences with multiple subordinate clauses for technical precision\n- Short declarative sentences for emphasis and clarity of key points\n- Frequent parenthetical citations and references embedded within sentences  \n- Balanced use of active and passive voice, with passive often used for describing processes\n- Compound-complex sentences that layer technical concepts systematically\n- Conditional and causal sentence structures (\"When X, then Y\" patterns)\n\n### PARAGRAPH STRUCTURE\nMedium-length paragraphs (4-7 sentences typically) with clear deductive organization. Opens with topic sentences that state main claims, followed by supporting evidence, technical details, and examples. Paragraphs build from general principles to specific implementations, concluding with implications or connections to broader research themes. Strong logical flow with explicit transitions between ideas.\n\n### TONE\nFormal, authoritative, and measured throughout. The tone maintains academic objectivity while presenting novel research contributions. Confident in technical claims but appropriately hedged with scientific language (\"suggest,\" \"indicate,\" \"demonstrate\"). Analytical rather than persuasive, focused on systematic presentation of evidence and findings.\n\n### OPENING PATTERNS\n- Direct statement of research contributions (\"We introduce...\")\n- Contextual framing (\"Recent work has shown...\")\n- Problem identification (\"Current AI systems cannot...\")\n- Technical definitions (\"A hyperagent is defined as...\")\n- Methodological descriptions (\"The DGM-H operates by...\")\n- Results presentation (\"Experiments demonstrate...\")\n\n### CLOSING PATTERNS\n- Implications for broader research (\"These results suggest...\")\n- Forward-looking research directions (\"Future work could...\")\n- Summary of key findings (\"Overall, our results show...\")\n- Connections to theoretical frameworks (\"This aligns with...\")\n- Practical applications (\"This enables...\")\n- Methodological advantages (\"This approach outperforms...\")\n\n### STRUCTURAL CONVENTIONS\n- Standard academic paper format with numbered sections and subsections\n- Author-date citation style with frequent in-text references\n- Technical definitions highlighted through formatting or explicit definition statements\n- Mathematical notation and algorithmic descriptions integrated into text\n- Extensive use of figures and tables for data presentation\n- Detailed appendices for implementation specifics and additional results\n- Cross-references to sections, figures, and appendices using numbered labels\n- Bullet points for listing technical specifications or experimental conditions\n\n--- spaCy metrics ---\n{'pos_distribution': {'NOUN': 0.26174647887323943, 'PROPN': 0.04788732394366197, 'PUNCT': 0.19898591549295774, 'ADJ': 0.07380281690140846, 'ADP': 0.0735774647887324, 'VERB': 0.11098591549295775, 'SYM': 0.011154929577464789, 'CCONJ': 0.02343661971830986, 'AUX': 0.018816901408450704, 'PART': 0.018366197183098593, 'ADV': 0.026028169014084508, 'PRON': 0.02343661971830986, 'DET': 0.06873239436619719, 'NUM': 0.011830985915492958, 'SCONJ': 0.010704225352112675, 'SPACE': 0.0004507042253521127, 'X': 0.019943661971830985, 'INTJ': 0.00011267605633802817}, 'avg_sentence_length': 26.26, 'type_token_ratio': 0.2066, 'total_sentences': 338}"
+  },
+  "outline": [
+    "Abstract",
+    "Introduction",
+    "Preliminaries and Related Work",
+    "From Single-Agent Self-Improvement to Clade-Metaproductivity",
+    "Multi-Agent Recursive Self-Improvement and the Frozen Critic Problem",
+    "Hyperagent Architectures",
+    "Theoretical Analysis",
+    "Experimental Framework and Evaluation",
+    "Discussion and Open Problems",
+    "Conclusion"
+  ],
+  "sections": [],
+  "running_context": "",
+  "llm_settings": {
+    "default": {
+      "provider": "claude",
+      "model_name": "claude-sonnet-4-20250514",
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "style_analysis": {
+      "provider": "claude",
+      "model_name": "claude-sonnet-4-20250514",
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "outline": {
+      "provider": "auto",
+      "model_name": null,
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "section_generation": {
+      "provider": "auto",
+      "model_name": "opus-4.6",
+      "context_length": 200000,
+      "max_output_tokens": 16384
+    },
+    "outline_engine": "auto"
+  },
+  "status": "outlining",
+  "current_section_index": 0,
+  "created_at": "2026-03-30T16:37:47.634137Z",
+  "updated_at": "2026-03-30T16:39:41.217065Z"
+}

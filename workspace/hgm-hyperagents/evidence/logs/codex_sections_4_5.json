@@ -1,0 +1,14 @@
+{
+  "task": "T09",
+  "sections_generated": [
+    3,
+    4
+  ],
+  "section_names": [
+    "From Single-Agent Self-Improvement to Clade-Metaproductivity",
+    "Multi-Agent Recursive Self-Improvement and the Frozen Critic Problem"
+  ],
+  "backend_used": "CodexBackend (via FallbackBackend \u2014 Claude primary failed)",
+  "override_applied": "provider=codex (affects default stage only; per-stage YAML overrides take precedence)",
+  "config_precedence_validated": true
+}

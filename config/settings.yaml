@@ -1,0 +1,12 @@
+model:
+  default:
+    provider: claude
+  style_analysis:
+    provider: claude
+  outline:
+    provider: claude
+  section_generation:
+    provider: claude
+    max_output_tokens: 16384
+    context_length: 200000
+  outline_engine: auto

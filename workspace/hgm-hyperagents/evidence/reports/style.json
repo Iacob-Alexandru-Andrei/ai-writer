@@ -1,0 +1,41 @@
+{
+  "fields": {
+    "vocabulary_level": {
+      "populated": true,
+      "type": "str",
+      "preview": "Advanced academic with heavy technical terminology. The writing employs sophisticated domain-specifi"
+    },
+    "sentence_patterns": {
+      "populated": true,
+      "type": "list",
+      "preview": "['Medium to long declarative sentences with complex clause structures', 'Frequent use of passive voi"
+    },
+    "paragraph_structure": {
+      "populated": true,
+      "type": "str",
+      "preview": "Paragraphs average 4-6 sentences with clear deductive organization. Topic sentences establish the ma"
+    },
+    "tone": {
+      "populated": true,
+      "type": "str",
+      "preview": "Formal and authoritative while remaining objective and measured. The tone maintains scientific rigor"
+    },
+    "opening_patterns": {
+      "populated": true,
+      "type": "list",
+      "preview": "['Direct statement of research findings: \"Results demonstrate performance improvements...\"', 'Contex"
+    },
+    "closing_patterns": {
+      "populated": true,
+      "type": "list",
+      "preview": "['Synthesis of key findings and their implications', 'Forward-looking statements about future resear"
+    },
+    "structural_conventions": {
+      "populated": true,
+      "type": "list",
+      "preview": "['Standard academic paper organization (Abstract, Introduction, Methods, Results, Discussion)', 'Hie"
+    }
+  },
+  "all_populated": true,
+  "spacy_metrics": "present_in_raw_analysis"
+}

@@ -19,6 +19,9 @@ if TYPE_CHECKING:
     from writing.models import ContentType, FewShotExample, StyleProfile
     from writing.settings import WriterSettings
 
+_TRUNCATION_MARKER = "\n\n[... truncated ...]"
+_BUDGET_TRUNCATION_NOTE = "[Prompt truncated for budget.]"
+
 
 class AssembledPrompt(BaseModel):
     """A fully assembled prompt ready for LLM submission.
@@ -66,11 +69,15 @@ def _truncate_to_tokens(text: str, max_tokens: int) -> str:
     Returns:
         The (possibly truncated) text.
     """
+    if max_tokens <= 0:
+        return ""
     if not text or _estimate_tokens(text) <= max_tokens:
         return text
 
     words = text.split()
-    marker = "\n\n[... truncated ...]"
+    marker = _TRUNCATION_MARKER
+    if _estimate_tokens(marker) > max_tokens:
+        return ""
 
     # Binary search for the largest prefix that fits within budget.
     lo, hi = 0, len(words)
@@ -83,6 +90,32 @@ def _truncate_to_tokens(text: str, max_tokens: int) -> str:
             hi = mid - 1
 
     return " ".join(words[:lo]) + marker
+
+
+def _fill_template(
+    template: str,
+    *,
+    style_text: str,
+    instruction: str,
+    section_name: str,
+    outline_text: str,
+    context_text: str,
+    fewshot_text: str,
+    bib_text: str,
+    budget_note: str = "",
+) -> str:
+    """Fill the content-type template with the current prompt sections."""
+    filled = template
+    filled = filled.replace("{{ style_profile }}", style_text)
+    filled = filled.replace("{{ instruction }}", instruction)
+    filled = filled.replace("{{ section_name }}", section_name)
+    filled = filled.replace("{{ outline_section }}", outline_text)
+    filled = filled.replace("{{ running_context }}", context_text)
+    filled = filled.replace("{{ few_shot_examples }}", fewshot_text)
+    filled = filled.replace("{{ bibliography_hints }}", bib_text)
+    if budget_note:
+        return f"{budget_note}\n\n{filled}"
+    return filled
 
 
 def _format_style_profile(profile: StyleProfile, max_tokens: int) -> str:
@@ -210,6 +243,8 @@ def assemble_prompt(
     bibliography: Bibliography | None = None,
     outline: list[str] | None = None,
     settings: WriterSettings | None = None,
+    context_length: int | None = None,
+    max_output_tokens: int | None = None,
 ) -> AssembledPrompt:
     """Assemble a complete prompt from components and a content-type template.
 
@@ -228,6 +263,8 @@ def assemble_prompt(
         bibliography: Optional bibliography for citation hints.
         outline: Optional document outline (list of section titles).
         settings: Optional settings override; defaults loaded when ``None``.
+        context_length: Optional model context length for total prompt budgeting.
+        max_output_tokens: Optional reserved output tokens for total prompt budgeting.
 
     Returns:
         An ``AssembledPrompt`` containing the filled template and budget report.
@@ -272,18 +309,106 @@ def assemble_prompt(
         outline_text = "(No outline available.)"
     budget_report["outline"] = _estimate_tokens(outline_text)
 
-    # 7. Fill template placeholders.
-    filled = template
-    filled = filled.replace("{{ style_profile }}", style_text)
-    filled = filled.replace("{{ instruction }}", instruction)
-    filled = filled.replace("{{ section_name }}", section_name)
-    filled = filled.replace("{{ outline_section }}", outline_text)
-    filled = filled.replace("{{ running_context }}", context_text)
-    filled = filled.replace("{{ few_shot_examples }}", fewshot_text)
-    filled = filled.replace("{{ bibliography_hints }}", bib_text)
+    # 7. Apply optional model-aware total prompt budget.
+    overall_budget: int | None = None
+    if context_length is not None and max_output_tokens is not None:
+        overall_budget = max(context_length - max_output_tokens - 1000, 0)
+
+    filled = _fill_template(
+        template,
+        style_text=style_text,
+        instruction=instruction,
+        section_name=section_name,
+        outline_text=outline_text,
+        context_text=context_text,
+        fewshot_text=fewshot_text,
+        bib_text=bib_text,
+    )
+    total = _estimate_tokens(filled)
+
+    if overall_budget is not None and total > overall_budget:
+        note_budget = _estimate_tokens(_BUDGET_TRUNCATION_NOTE)
+        target_budget = max(overall_budget - note_budget, 0)
+
+        section_values = {
+            "style_profile": style_text,
+            "few_shot_examples": fewshot_text,
+            "running_context": context_text,
+            "bibliography_hints": bib_text,
+            "outline": outline_text,
+        }
+        section_order = [
+            "running_context",
+            "few_shot_examples",
+            "bibliography_hints",
+            "style_profile",
+            "outline",
+        ]
+
+        def _current_filled() -> str:
+            return _fill_template(
+                template,
+                style_text=section_values["style_profile"],
+                instruction=instruction,
+                section_name=section_name,
+                outline_text=section_values["outline"],
+                context_text=section_values["running_context"],
+                fewshot_text=section_values["few_shot_examples"],
+                bib_text=section_values["bibliography_hints"],
+            )
+
+        for section_name_key in section_order:
+            current_total = _estimate_tokens(_current_filled())
+            if current_total <= target_budget:
+                break
+
+            current_text = section_values[section_name_key]
+            current_tokens = _estimate_tokens(current_text)
+            if current_tokens == 0:
+                continue
+
+            overage = current_total - target_budget
+            section_values[section_name_key] = _truncate_to_tokens(
+                current_text,
+                max(current_tokens - overage, 0),
+            )
+
+        filled = _fill_template(
+            template,
+            style_text=section_values["style_profile"],
+            instruction=instruction,
+            section_name=section_name,
+            outline_text=section_values["outline"],
+            context_text=section_values["running_context"],
+            fewshot_text=section_values["few_shot_examples"],
+            bib_text=section_values["bibliography_hints"],
+            budget_note=_BUDGET_TRUNCATION_NOTE,
+        )
+        total = _estimate_tokens(filled)
+
+        if total > overall_budget:
+            note = _BUDGET_TRUNCATION_NOTE
+            if note_budget > overall_budget:
+                note = _truncate_to_tokens(note, overall_budget)
+                filled = note
+            else:
+                body_budget = overall_budget - note_budget
+                body = _truncate_to_tokens(_current_filled(), body_budget)
+                filled = note if not body else f"{note}\n\n{body}"
+            total = _estimate_tokens(filled)
+
+        style_text = section_values["style_profile"]
+        fewshot_text = section_values["few_shot_examples"]
+        context_text = section_values["running_context"]
+        bib_text = section_values["bibliography_hints"]
+        outline_text = section_values["outline"]
 
     # 8. Build assembled prompt.
-    total = _estimate_tokens(filled)
+    budget_report["style_profile"] = _estimate_tokens(style_text)
+    budget_report["few_shot_examples"] = _estimate_tokens(fewshot_text)
+    budget_report["running_context"] = _estimate_tokens(context_text)
+    budget_report["bibliography_hints"] = _estimate_tokens(bib_text)
+    budget_report["outline"] = _estimate_tokens(outline_text)
     budget_report["total"] = total
 
     return AssembledPrompt(

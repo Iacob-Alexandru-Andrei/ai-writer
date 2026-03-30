@@ -1,0 +1,12 @@
+{
+  "task": "T11",
+  "section_index": 5,
+  "section_name": "Hyperagent Architectures",
+  "test_1_routing_state": "claude",
+  "test_1_result": "Claude primary failed (subprocess), FallbackBackend \u2192 CodexBackend",
+  "test_2_routing_state_switch": "codex",
+  "test_2_reads_fresh": true,
+  "auto_provider_validated": true,
+  "fallback_validated": true,
+  "AC07_satisfied": "FallbackBackend caught RuntimeError, retried with secondary"
+}

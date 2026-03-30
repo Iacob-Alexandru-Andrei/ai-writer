@@ -1,0 +1,22 @@
+# References
+
+- **good1966speculations**: Good, Irving John (1966). "Speculations Concerning the First Ultraintelligent Machine". *article*.
+- **Schmidhuber1987EvolutionaryPI**: Schmidhuber, J{\"u}rgen (1987). "Evolutionary Principles in Self-Referential Learning, or On Learning How to Learn: The Meta-Meta-... Hook". *mastersthesis*.
+- **Schmidhuber:03gm**: Schmidhuber, J{\"u}rgen (2007). "G{\"o}del Machines: Fully Self-Referential Optimal Universal Self-Improvers". *incollection*.
+- **schmidhuber1997shifting**: Schmidhuber, J{\"u}rgen and Zhao, Jieyu and Wiering, Marco (1997). "Shifting Inductive Bias with Success-Story Algorithm, Adaptive {L}evin Search, and Incremental Self-Improvement". *article*.
+- **NIPS200849ae49a2**: Wang, Yizao and Audibert, Jean-Yves and Munos, R{\'e}mi (2008). "Algorithms for Infinitely Many-Armed Bandits". *inproceedings*.
+- **zhang2025dgm**: Zhang, Jenny and Hu, Shengran and Li, Cong and Clune, Jeff (2025). "Darwin {G}{\"o}del Machine: Open-Ended Evolution of Self-Improving Agents". *article*.
+- **robeyns2025selfimprovingcodingagent**: Robeyns, Thomas and Robbe, Andries and Betthauser, Leo and Bosio, Jordi and Bosnjak, Matko (2025). "A Self-Improving Coding Agent". *article*.
+- **wang2025hgm**: Wang, Wenyi and Pi{\k{e}}kos, Piotr and Li, Nanbo and Laakom, Firas and Chen, Yimeng and Ostaszewski, Mateusz and Zhuge, Mingchen and Schmidhuber, J{\"u}rgen (2025). "Huxley-{G}{\"o}del Machine: Human-Level Coding Agent Development by an Approximation of the Optimal Self-Improving Machine". *article*.
+- **zelikmanSelfTaughtOptimizerSTOP2024**: Zelikman, Eric and Huang, Qian and Poesia, Gabriel and Goodman, Noah D. and Haber, Nick (2024). "Self-Taught Optimizer ({STOP}): Recursively Self-Improving Code Generation". *article*.
+- **lu2024aiscientist**: Lu, Chris and Lu, Cong and Lange, Robert Tjarko and Foerster, Jakob and Clune, Jeff and Ha, David (2024). "The {AI} Scientist: Towards Fully Automated Open-Ended Scientific Discovery". *article*.
+- **ghafarollahi2024sciagents**: Ghafarollahi, Alireza and Buehler, Markus J. (2024). "{SciAgents}: Automating Scientific Discovery through Multi-Agent Intelligent Graph Reasoning". *article*.
+- **agents4science**: Zhuge, Mingchen and others (2025). "Agents4Science: Autonomous Scientific Discovery with Multi-Agent Intelligence". *article*.
+- **hong2024metagpt**: Hong, Sirui and Zhuge, Mingchen and Chen, Jonathan and Zheng, Xiawu and Cheng, Yuheng and Zhang, Ceyao and Wang, Jinlin and Wang, Zili and Yau, Steven Ka Zhong and Lin, Zijuan and Zhou, Liyang and Ran, Chenyu and Xiao, Lingfeng and Wu, Chenglin and Schmidhuber, J{\"u}rgen (2024). "{MetaGPT}: Meta Programming for a Multi-Agent Collaborative Framework". *article*.
+- **zhuge2024gptswarm**: Zhuge, Mingchen and Wang, Wenyi and Kirsch, Louis and Faccio, Francesco and Khizbullin, Dmitrii and Schmidhuber, J{\"u}rgen (2024). "{GPTSwarm}: Language Agents as Optimizable Graphs". *article*.
+- **deepmind2025alphaevolve**: Novikov, Alexander and others (2025). "{AlphaEvolve}: A Coding Agent for Scientific and Algorithmic Discovery". *article*.
+- **mitchell2023detectgpt**: Mitchell, Eric and Lee, Yoonho and Khazatsky, Alexander and Manning, Christopher D. and Finn, Chelsea (2023). "{DetectGPT}: Zero-Shot Machine-Generated Text Detection using Probability Curvature". *inproceedings*.
+- **kirchenbauer2023watermark**: Kirchenbauer, John and Geiping, Jonas and Wen, Yuxin and Katz, Jonathan and Miers, Ian and Goldstein, Tom (2023). "A Watermark for Large Language Models". *inproceedings*.
+- **zhang2025darwin**: Zhang, Jenny and Hu, Shengran and Lu, Cong and Lange, Robert and Clune, Jeff (2025). "{Darwin Godel Machine: Open-Ended Evolution of Self-Improving Agents}". *article*.
+- **stanley2017open**: Stanley, Kenneth O and Lehman, Joel and Soros, Lisa (2017). "{Open-endedness: The last grand challenge you’ve never heard of}". *article*.
+- **hughes2024open**: Hughes, Edward and Dennis, Michael and Parker-Holder, Jack and Behbahani, Feryal and Mavalankar, Aditi and Shi, Yuge and Schaul, Tom and Rocktaschel, Tim (2024). "{Open-endedness is essential for artificial superhuman intelligence}". *article*.

@@ -10,14 +10,27 @@ Code's built-in model access (R14).
 from __future__ import annotations
 
 import json
+import logging
 import os
 import subprocess
+import warnings
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import TypeVar
+from uuid import uuid4
 
 from pydantic import TypeAdapter
+from writing.llm_config import (
+    DEFAULT_CLAUDE_MODEL,
+    DEFAULT_CODEX_MODEL,
+    LLMSettings,
+    ModelSpec,
+    Provider,
+    StageType,
+)
 
 _T = TypeVar("_T")
+logger = logging.getLogger(__name__)
 
 
 class LLMBackend(ABC):
@@ -64,6 +77,16 @@ class ClaudeCLIBackend(LLMBackend):
     is installed but the calling process is not a Claude Code session.
     """
 
+    def __init__(
+        self,
+        model_name: str | None = None,
+        context_length: int = 200000,
+        max_output_tokens: int = 16384,
+    ) -> None:
+        self.model_name = model_name
+        self.context_length = context_length
+        self.max_output_tokens = max_output_tokens
+
     def generate(self, prompt: str, system: str | None = None) -> str:
         """Run ``claude -p`` and return stdout.
 
@@ -78,12 +101,16 @@ class ClaudeCLIBackend(LLMBackend):
             RuntimeError: If the subprocess exits with a non-zero code.
         """
         cmd: list[str] = ["claude", "-p"]
+        if self.model_name:
+            cmd.extend(["--model", self.model_name])
+        # Note: claude -p does not support --max-tokens; token budget is
+        # enforced at the prompt-assembly level via self.max_output_tokens.
         if system:
             cmd.extend(["--system-prompt", system])
-        cmd.append(prompt)
-
+        # Pipe the prompt via stdin to avoid ARG_MAX limits on long prompts.
         result = subprocess.run(  # noqa: S603
             cmd,
+            input=prompt,
             capture_output=True,
             text=True,
             check=False,
@@ -116,6 +143,129 @@ class ClaudeCLIBackend(LLMBackend):
         # Strip markdown fences if the model wraps the output.
         cleaned = _strip_json_fences(raw)
         return adapter.validate_json(cleaned)
+
+
+class CodexBackend(LLMBackend):
+    """Backend that shells out to ``codex-run`` for generation."""
+
+    CODEX_BIN = Path.home() / ".claude" / "bin" / "codex-run"
+
+    def __init__(
+        self,
+        model_name: str | None = None,
+        context_length: int = 200000,
+        max_output_tokens: int = 16384,
+    ) -> None:
+        self.model_name = model_name
+        self.context_length = context_length
+        self.max_output_tokens = max_output_tokens
+
+    def generate(self, prompt: str, system: str | None = None) -> str:
+        """Run ``codex-run`` and return the generated file content."""
+        output_file = Path("/tmp") / f"codex-gen-{uuid4().hex[:8]}.md"
+        combined_prompt = f"{system}\n\n{prompt}" if system else prompt
+
+        cmd = [
+            str(self.CODEX_BIN),
+            str(output_file),
+            "exec",
+            "--full-auto",
+            "--skip-git-repo-check",
+            "--color",
+            "never",
+        ]
+        if self.model_name:
+            cmd.extend(["-m", self.model_name])
+        cmd.append(combined_prompt)
+
+        try:
+            result = subprocess.run(  # noqa: S603
+                cmd,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=7200,
+            )
+        except subprocess.TimeoutExpired as exc:
+            msg = f"codex-run timed out after 7200 seconds: {exc}"
+            raise RuntimeError(msg) from exc
+        except OSError as exc:
+            msg = f"codex-run failed to start: {exc}"
+            raise RuntimeError(msg) from exc
+
+        try:
+            if result.returncode != 0:
+                stderr = result.stderr.strip()
+                stdout = result.stdout.strip()
+                details = stderr or stdout or "no subprocess output"
+                msg = f"codex-run failed (rc={result.returncode}): {details}"
+                raise RuntimeError(msg)
+            return output_file.read_text(encoding="utf-8").strip()
+        except OSError as exc:
+            msg = f"codex-run did not produce a readable output file: {exc}"
+            raise RuntimeError(msg) from exc
+        finally:
+            output_file.unlink(missing_ok=True)
+
+    def generate_structured(self, prompt: str, schema: type[_T]) -> _T:
+        """Generate JSON via ``codex-run`` and parse into *schema*."""
+        adapter: TypeAdapter[_T] = TypeAdapter(schema)
+        json_schema = json.dumps(adapter.json_schema(), indent=2)
+
+        augmented_prompt = (
+            f"{prompt}\n\n"
+            f"Respond ONLY with valid JSON matching this schema:\n"
+            f"```json\n{json_schema}\n```"
+        )
+        raw = self.generate(augmented_prompt)
+        cleaned = _strip_json_fences(raw)
+        return adapter.validate_json(cleaned)
+
+
+class FallbackBackend(LLMBackend):
+    """Backend wrapper that retries with a secondary backend on runtime failures."""
+
+    def __init__(self, primary: LLMBackend, secondary: LLMBackend) -> None:
+        self.primary = primary
+        self.secondary = secondary
+
+    def generate(self, prompt: str, system: str | None = None) -> str:
+        """Run generation with fallback on transport/runtime failures."""
+        try:
+            return self.primary.generate(prompt, system)
+        except (
+            subprocess.TimeoutExpired,
+            subprocess.CalledProcessError,
+            RuntimeError,
+            OSError,
+            FileNotFoundError,
+        ) as exc:
+            logger.warning(
+                "Primary backend %s failed; falling back to %s: %s",
+                type(self.primary).__name__,
+                type(self.secondary).__name__,
+                exc,
+            )
+            return self.secondary.generate(prompt, system)
+
+    def generate_structured(self, prompt: str, schema: type[_T]) -> _T:
+        """Run structured generation with fallback on transport/runtime failures."""
+        try:
+            return self.primary.generate_structured(prompt, schema)
+        except (
+            subprocess.TimeoutExpired,
+            subprocess.CalledProcessError,
+            RuntimeError,
+            OSError,
+            FileNotFoundError,
+        ) as exc:
+            logger.warning(
+                "Primary backend %s failed; falling back to %s: %s",
+                type(self.primary).__name__,
+                type(self.secondary).__name__,
+                exc,
+            )
+            return self.secondary.generate_structured(prompt, schema)
 
 
 class AgentBackend(LLMBackend):
@@ -176,9 +326,41 @@ def get_backend() -> LLMBackend:
     Returns:
         An ``LLMBackend`` instance ready for use.
     """
+    warnings.warn(
+        "get_backend() is deprecated; use resolve_backend() for stage-aware routing.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     if os.environ.get("CLAUDE_CODE_SESSION"):
         return AgentBackend()
     return ClaudeCLIBackend()
+
+
+def read_routing_state() -> str:
+    """Read the current routing state and return the primary provider."""
+    try:
+        payload = json.loads(Path("/tmp/orch-routing.json").read_text(encoding="utf-8"))
+        primary = payload["primary"]
+        if not isinstance(primary, str):
+            raise TypeError("primary must be a string")
+        return primary
+    except (OSError, ValueError, TypeError, KeyError):
+        return Provider.CLAUDE.value
+
+
+def resolve_backend(stage: StageType, settings: LLMSettings) -> LLMBackend:
+    """Resolve a stage-specific backend with fallback to the alternate provider."""
+    spec = settings.for_stage(stage)
+    provider_name = spec.provider.value
+    if provider_name == Provider.AUTO.value:
+        provider_name = read_routing_state()
+
+    primary = _build_backend_for_provider(provider_name, spec)
+    secondary_provider = (
+        Provider.CLAUDE.value if provider_name == Provider.CODEX.value else Provider.CODEX.value
+    )
+    secondary = _build_backend_for_provider(secondary_provider, spec)
+    return FallbackBackend(primary, secondary)
 
 
 # ---------------------------------------------------------------------------
@@ -204,3 +386,18 @@ def _strip_json_fences(text: str) -> str:
         # Remove closing fence.
         stripped = stripped.removesuffix("```")
     return stripped.strip()
+
+
+def _build_backend_for_provider(provider_name: str, spec: ModelSpec) -> LLMBackend:
+    """Instantiate the requested backend type for a resolved provider."""
+    if provider_name == Provider.CODEX.value:
+        return CodexBackend(
+            model_name=spec.model_name or DEFAULT_CODEX_MODEL,
+            context_length=spec.context_length,
+            max_output_tokens=spec.max_output_tokens,
+        )
+    return ClaudeCLIBackend(
+        model_name=spec.model_name or DEFAULT_CLAUDE_MODEL,
+        context_length=spec.context_length,
+        max_output_tokens=spec.max_output_tokens,
+    )

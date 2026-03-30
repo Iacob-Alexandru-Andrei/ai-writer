@@ -1,0 +1,23 @@
+{
+  "dspy_available": true,
+  "dspy_signature_paper": "PaperSectionSignature",
+  "dspy_signature_thesis": "ThesisSectionSignature",
+  "dspy_signature_blog": "BlogSectionSignature",
+  "dspy_signature_linkedin": "LinkedInPostSignature",
+  "dspy_signature_twitter": "TwitterThreadSignature",
+  "dspy_optimizer_error": "module 'dspy' has no attribute 'BootstrapFewShot'",
+  "instructor_model_paper": "AcademicPaper",
+  "instructor_model_thesis": "ThesisChapter",
+  "instructor_model_blog": "BlogPost",
+  "instructor_model_linkedin": "LinkedInPost",
+  "instructor_model_twitter": "TwitterThread",
+  "instructor_version": "instructor",
+  "opendraft_available": true,
+  "opendraft_methods": [
+    "cross_reference_bibliography",
+    "find_citation_like_patterns",
+    "suggest_citation_key"
+  ],
+  "storm_available": true,
+  "csw_available": true
+}

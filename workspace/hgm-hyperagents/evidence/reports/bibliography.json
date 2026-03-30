@@ -1,0 +1,87 @@
+{
+  "bibtex_files": [
+    {
+      "path": "iclr2026_conference.bib",
+      "entry_count": 17,
+      "entries": [
+        {
+          "key": "good1966speculations",
+          "title": "Speculations Concerning the First Ultraintelligent Machine",
+          "authors": "Good, Irving John",
+          "year": 1966
+        },
+        {
+          "key": "Schmidhuber1987EvolutionaryPI",
+          "title": "Evolutionary Principles in Self-Referential Learning, or On Learning How to Lear",
+          "authors": "Schmidhuber, J{\\\"u}rgen",
+          "year": 1987
+        },
+        {
+          "key": "Schmidhuber:03gm",
+          "title": "G{\\\"o}del Machines: Fully Self-Referential Optimal Universal Self-Improvers",
+          "authors": "Schmidhuber, J{\\\"u}rgen",
+          "year": 2007
+        },
+        {
+          "key": "schmidhuber1997shifting",
+          "title": "Shifting Inductive Bias with Success-Story Algorithm, Adaptive {L}evin Search, a",
+          "authors": "Schmidhuber, J{\\\"u}rgen and Zhao, Jieyu and Wiering, Marco",
+          "year": 1997
+        },
+        {
+          "key": "NIPS200849ae49a2",
+          "title": "Algorithms for Infinitely Many-Armed Bandits",
+          "authors": "Wang, Yizao and Audibert, Jean-Yves and Munos, R{\\'e}mi",
+          "year": 2008
+        }
+      ]
+    },
+    {
+      "path": "paper.bib",
+      "entry_count": 131,
+      "entries": [
+        {
+          "key": "zhang2025darwin",
+          "title": "{Darwin Godel Machine: Open-Ended Evolution of Self-Improving Agents}",
+          "authors": "Zhang, Jenny and Hu, Shengran and Lu, Cong and Lange, Robert",
+          "year": 2025
+        },
+        {
+          "key": "stanley2017open",
+          "title": "{Open-endedness: The last grand challenge you\u2019ve never heard of}",
+          "authors": "Stanley, Kenneth O and Lehman, Joel and Soros, Lisa",
+          "year": 2017
+        },
+        {
+          "key": "hughes2024open",
+          "title": "{Open-endedness is essential for artificial superhuman intelligence}",
+          "authors": "Hughes, Edward and Dennis, Michael and Parker-Holder, Jack a",
+          "year": 2024
+        },
+        {
+          "key": "zhangomni",
+          "title": "{OMNI: Open-endedness via Models of human Notions of Interestingness}",
+          "authors": "Zhang, Jenny and Lehman, Joel and Stanley, Kenneth and Clune",
+          "year": 2024
+        },
+        {
+          "key": "faldoromni",
+          "title": "{OMNI-EPIC: Open-endedness via Models of human Notions of Interestingness with E",
+          "authors": "Faldor, Maxence and Zhang, Jenny and Cully, Antoine and Clun",
+          "year": 2025
+        }
+      ]
+    }
+  ],
+  "markdown_parse": {
+    "path": "/Users/iacobalexandru/projects/ai-writer/workspace/hgm-hyperagents/evidence/inputs/references.md",
+    "entry_count": 20,
+    "sample_keys": [
+      "good1966speculations",
+      "Schmidhuber1987EvolutionaryPI",
+      "Schmidhuber:03gm",
+      "schmidhuber1997shifting",
+      "NIPS200849ae49a2"
+    ]
+  }
+}

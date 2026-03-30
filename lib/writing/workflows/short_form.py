@@ -9,9 +9,11 @@ calls.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from writing.backends import get_backend
+from writing.llm_config import StageType
 from writing.models import ContentType, GenerationResult, SessionStatus
 from writing.prompt_assembler import AssembledPrompt, assemble_prompt
 from writing.session import SessionManager
@@ -52,6 +54,7 @@ class ShortFormWorkflow:
         self,
         *,
         session_manager: SessionManager | None = None,
+        backend_resolver: Callable[[StageType], LLMBackend] | None = None,
         backend: LLMBackend | None = None,
         settings: WriterSettings | None = None,
     ) -> None:
@@ -60,6 +63,8 @@ class ShortFormWorkflow:
         Args:
             session_manager: Session persistence manager.  When *None*, a
                 new ``SessionManager`` is created with the active settings.
+            backend_resolver: Optional callable that resolves the LLM
+                backend lazily for each stage.
             backend: LLM backend for generation calls.  When *None*,
                 ``get_backend()`` selects the default backend.
             settings: Writer settings.  When *None*, settings are loaded
@@ -71,7 +76,12 @@ class ShortFormWorkflow:
             if session_manager is not None
             else SessionManager(settings=self._settings)
         )
-        self._backend: LLMBackend = backend if backend is not None else get_backend()
+        self._backend_resolver = backend_resolver
+        self._backend: LLMBackend | None = (
+            backend if backend is not None else None
+        )
+        if self._backend is None and self._backend_resolver is None:
+            self._backend = get_backend()
 
     # ------------------------------------------------------------------
     # Public API
@@ -141,7 +151,8 @@ class ShortFormWorkflow:
             A ``GenerationResult`` containing the generated content.
         """
         prompt = self._build_prompt(session)
-        raw_content = self._backend.generate(prompt.user_prompt, system=prompt.system_prompt)
+        backend = self._get_backend(StageType.SECTION_GENERATION)
+        raw_content = backend.generate(prompt.user_prompt, system=prompt.system_prompt)
 
         # Validate and retry on platform-limit violations.
         content = self._validate_and_retry(session, raw_content)
@@ -247,6 +258,15 @@ class ShortFormWorkflow:
     # Private helpers
     # ------------------------------------------------------------------
 
+    def _get_backend(self, stage: StageType) -> LLMBackend:
+        """Return the configured backend for a workflow stage."""
+        if self._backend is not None:
+            return self._backend
+        if self._backend_resolver is None:
+            msg = "No backend or backend resolver configured."
+            raise RuntimeError(msg)
+        return self._backend_resolver(stage)
+
     def _validate_and_retry(
         self,
         session: SessionState,
@@ -265,6 +285,7 @@ class ShortFormWorkflow:
             Valid content, or the best attempt after *max_retries*.
         """
         prompt = self._build_prompt(session)
+        backend = self._get_backend(StageType.SECTION_GENERATION)
 
         for attempt in range(max_retries):
             errors = validate_content(session.content_type, content)
@@ -285,7 +306,7 @@ class ShortFormWorkflow:
                 content,
                 [e.message for e in error_level],
             )
-            content = self._backend.generate(retry_prompt)
+            content = backend.generate(retry_prompt)
 
         return content
 
@@ -324,11 +345,14 @@ class ShortFormWorkflow:
         Returns:
             An ``AssembledPrompt`` ready for LLM submission.
         """
+        spec = self._settings.llm.for_stage(StageType.SECTION_GENERATION)
         return assemble_prompt(
             content_type=session.content_type,
             instruction=session.instruction,
             style_profile=session.style_profile,
             settings=self._settings,
+            context_length=spec.context_length,
+            max_output_tokens=spec.max_output_tokens,
         )
 
     def _analyze_corpus(
@@ -365,4 +389,4 @@ class ShortFormWorkflow:
             logger.warning("Corpus directory is empty: %s", corpus_dir)
             return None
 
-        return analyze_style(corpus, backend=self._backend)
+        return analyze_style(corpus, backend=self._get_backend(StageType.STYLE_ANALYSIS))

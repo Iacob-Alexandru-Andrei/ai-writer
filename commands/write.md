@@ -1,9 +1,9 @@
 ---
 description: "Start a new writing session"
-argument-hint: "<content-type> <instruction> [--refs <dir>] [--bib <file>] [--examples <a,b>]"
+argument-hint: "<content-type> <instruction> [--refs <dir>] [--bib <file>] [--examples <a,b>] [--llm key=value ...]"
 ---
 
-Parse `$ARGUMENTS`: first word is **content type** (paper/thesis/blog/linkedin/twitter), rest is **instruction**. Optional flags: `--refs` (corpus dir), `--bib` (bibliography file), `--examples` (comma-separated filenames).
+Parse `$ARGUMENTS`: first word is **content type** (paper/thesis/blog/linkedin/twitter), rest is **instruction**. Optional flags: `--refs` (corpus dir), `--bib` (bibliography file), `--examples` (comma-separated filenames), `--llm` (repeatable key=value pairs for LLM config: `provider`, `model`, `style_model`, `outline_model`, `section_model`, `context_length`, `max_output_tokens`).
 
 ### 1. Start session
 
@@ -11,7 +11,8 @@ Parse `$ARGUMENTS`: first word is **content type** (paper/thesis/blog/linkedin/t
 source $HOME/.claude/lib/launcher.sh && claude_run_python '
 import json; from pathlib import Path
 from writing.pipeline import Pipeline; from writing.models import ContentType
-p = Pipeline()
+llm_overrides = {k: v for k, v in [x.split("=", 1) for x in "<LLM_OVERRIDES>".split(",") if "=" in x]} if "<LLM_OVERRIDES>" else None
+p = Pipeline(llm_overrides=llm_overrides)
 s = p.start_session(content_type=ContentType("<TYPE>"), instruction="<INSTRUCTION>",
     corpus_dir=Path("<REFS>") if "<REFS>" else None,
     bibliography_path=Path("<BIB>") if "<BIB>" else None,
@@ -20,7 +21,7 @@ print(json.dumps({"session_id": s.session_id, "status": s.status.value, "type": 
 '
 ```
 
-Replace placeholders with parsed values. Pass `None` for omitted optional args.
+Replace placeholders with parsed values. Pass `None` for omitted optional args. `<LLM_OVERRIDES>` is a comma-joined string of `key=value` pairs from all `--llm` flags (e.g., `provider=codex,model=gpt-5.4`). Pass `None` if no `--llm` flags.
 
 ### 2. Outline (long-form only: paper/thesis/blog)
 

@@ -1,0 +1,49 @@
+{
+  "files": [
+    {
+      "name": "dgm_darwin_godel_machine.md",
+      "format": "markdown",
+      "word_count": 862,
+      "raw_length": 6882,
+      "normalized_length": 6882
+    },
+    {
+      "name": "hgm_huxley_godel_machine.md",
+      "format": "markdown",
+      "word_count": 1069,
+      "raw_length": 8446,
+      "normalized_length": 8446
+    },
+    {
+      "name": "hyperagents.tex",
+      "format": "latex",
+      "word_count": 14431,
+      "raw_length": 130524,
+      "normalized_length": 116735,
+      "regex_fallback_length": 120798,
+      "regex_fallback_has_content": true,
+      "pandoc_result_length": 116735,
+      "pandoc_available": true
+    },
+    {
+      "name": "recursive_scientist.tex",
+      "format": "latex",
+      "word_count": 4325,
+      "raw_length": 43345,
+      "normalized_length": 37614,
+      "regex_fallback_length": 37070,
+      "regex_fallback_has_content": true,
+      "pandoc_result_length": 37614,
+      "pandoc_available": true
+    }
+  ],
+  "total_words": 20687,
+  "total_files": 4,
+  "exposed_files": [
+    "recursive_scientist.md",
+    "hyperagents.md",
+    "dgm_darwin_godel_machine.md",
+    "hgm_huxley_godel_machine.md"
+  ],
+  "search_hit_count": 4
+}
