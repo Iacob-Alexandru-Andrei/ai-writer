@@ -3,7 +3,7 @@
 <!-- generated:2026-03-30T17:25:00Z -->
 <!-- spec:SPEC.md -->
 <!-- task-count:22 -->
-<!-- dispatches:2 -->
+<!-- dispatches:3 -->
 <!-- elapsed-s:0 -->
 <!-- convergence:0 -->
 <!-- planned:dual-plan -->
@@ -39,7 +39,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated
   - [x] Committed
 
-- [ ] T03: Corpus ingestion and LaTeX normalization preflight
+- [x] T03: Corpus ingestion and LaTeX normalization preflight
   - Ref: R02, R03, R04
   - Type: substantive
   - Route: orchestrator
@@ -48,9 +48,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: scripts/live_pipeline_harness.py (new), workspace/hgm-hyperagents/evidence/reports/corpus.json, evidence/reports/bibliography.json, evidence/reports/fewshot.json
   - Depends: T01
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct
+  - [x] Validated — 4 files loaded, 148 bib entries parsed, budget enforcement verified
+  - [x] Committed
 
 - [ ] T04: Style analysis and outline engine probes
   - Ref: R05, R06

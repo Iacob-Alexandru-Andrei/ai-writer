@@ -1,0 +1,37 @@
+{
+  "suggestions": [
+    "hyperagents.tex",
+    "recursive_scientist.tex",
+    "dgm_darwin_godel_machine.md",
+    "hgm_huxley_godel_machine.md"
+  ],
+  "selected": [
+    {
+      "source": "dgm_darwin_godel_machine.md",
+      "token_count": 1720,
+      "truncated": false,
+      "section_slice": null
+    },
+    {
+      "source": "hgm_huxley_godel_machine.md",
+      "token_count": 2000,
+      "truncated": true,
+      "section_slice": null
+    },
+    {
+      "source": "hyperagents.tex",
+      "token_count": 2000,
+      "truncated": true,
+      "section_slice": null
+    }
+  ],
+  "budget_per_example": 2000,
+  "budget_total": 6000,
+  "has_truncation_marker": true,
+  "section_extraction": {
+    "file": "dgm_darwin_godel_machine.md",
+    "section": "Introduction",
+    "extracted": true,
+    "token_count": 312
+  }
+}
