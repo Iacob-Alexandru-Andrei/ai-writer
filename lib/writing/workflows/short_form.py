@@ -345,11 +345,14 @@ class ShortFormWorkflow:
         Returns:
             An ``AssembledPrompt`` ready for LLM submission.
         """
+        spec = self._settings.llm.for_stage(StageType.SECTION_GENERATION)
         return assemble_prompt(
             content_type=session.content_type,
             instruction=session.instruction,
             style_profile=session.style_profile,
             settings=self._settings,
+            context_length=spec.context_length,
+            max_output_tokens=spec.max_output_tokens,
         )
 
     def _analyze_corpus(

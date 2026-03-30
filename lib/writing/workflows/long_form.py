@@ -213,6 +213,7 @@ class LongFormWorkflow:
         corpus = self._load_corpus(session)
         bibliography = self._load_bibliography(session)
         examples = self._select_examples(session, corpus)
+        spec = self._settings.llm.for_stage(StageType.SECTION_GENERATION)
 
         prompt = assemble_prompt(
             content_type=session.content_type,
@@ -224,6 +225,8 @@ class LongFormWorkflow:
             bibliography=bibliography,
             outline=session.outline,
             settings=self._settings,
+            context_length=spec.context_length,
+            max_output_tokens=spec.max_output_tokens,
         )
 
         backend = self._get_backend(StageType.SECTION_GENERATION)
