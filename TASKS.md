@@ -132,7 +132,7 @@ Generated from SPEC.md. 22 tasks.
   - [x] Validated — 2 sections generated (57K + 64K chars), codex evidence log saved
   - [x] Committed
 
-- [ ] T10: Milestone — push paper progress (sections 1-5)
+- [x] T10: Milestone — push paper progress (sections 1-5)
   - Ref: R13
   - Type: trivial
   - Route: orchestrator
@@ -141,10 +141,10 @@ Generated from SPEC.md. 22 tasks.
   - Files: (git operations)
   - Depends: T08, T09
   - Parallel: none
-  - [ ] Committed
-  - [ ] PR reviews
+  - [x] Committed — T08, T09 pushed
+  - [x] PR reviews — no comments
 
-- [ ] T11: Generate section 6 with auto provider and test FallbackBackend
+- [x] T11: Generate section 6 with auto provider and test FallbackBackend
   - Ref: R09, R10, R13
   - Type: substantive
   - Route: orchestrator
@@ -153,9 +153,9 @@ Generated from SPEC.md. 22 tasks.
   - Files: workspace/hgm-hyperagents/evidence/paper/, evidence/reports/fallback_auto.json, evidence/logs/
   - Depends: T09
   - Parallel: none
-  - [ ] Dispatched
-  - [ ] Validated
-  - [ ] Committed
+  - [x] Dispatched via direct — auto provider resolved to claude, FallbackBackend caught RuntimeError, used CodexBackend
+  - [x] Validated — AC07 satisfied (fallback evidence), routing state switch from claude→codex verified
+  - [x] Committed
 
 - [ ] T12: Generate section 7 with prompt budget stress test
   - Ref: R13, R14, R15, R16
