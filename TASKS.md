@@ -1,18 +1,20 @@
-<!-- autonomy:active -->
+<!-- verified:complete -->
+<!-- autonomy:complete -->
 <!-- failures:0 -->
 <!-- generated:2026-03-30T14:10:00Z -->
 <!-- spec:SPEC.md -->
 <!-- task-count:13 -->
-<!-- dispatches:0 -->
+<!-- dispatches:11 -->
 <!-- elapsed-s:0 -->
 <!-- convergence:0 -->
 <!-- planned:dual-plan -->
+<!-- branch:feature/configurable-backend-model -->
 
 # TASKS
 
 Generated from SPEC.md. 13 tasks.
 
-- [ ] T01: Create LLM configuration types and YAML schema
+- [x] T01: Create LLM configuration types and YAML schema
   - Ref: R01, R07, R12
   - Type: substantive
   - Route: codex
@@ -21,11 +23,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/llm_config.py (new), lib/writing/settings.py, config/settings.yaml
   - Depends: none
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + python -c "from writing.llm_config import Provider, StageType, ModelSpec, LLMSettings")
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated
+  - [x] Committed
 
-- [ ] T02: Implement all backend classes (Claude model selection, Codex, Fallback, routing, resolver)
+- [x] T02: Implement all backend classes (Claude model selection, Codex, Fallback, routing, resolver)
   - Ref: R02, R03, R04, R05, R06
   - Type: substantive
   - Route: codex
@@ -34,11 +36,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/backends.py
   - Depends: T01
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + python -c "from writing.backends import CodexBackend, FallbackBackend, resolve_backend")
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated
+  - [x] Committed
 
-- [ ] T03: Write tests for T01 and T02
+- [x] T03: Write tests for T01 and T02
   - Ref: R01, R02, R03, R04, R05, R06, R07, R12
   - Type: substantive
   - Route: codex
@@ -47,11 +49,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: tests/test_llm_config.py (new), tests/test_backends_config.py (new), tests/test_settings_llm.py (new)
   - Depends: T01, T02
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/test_llm_config.py tests/test_backends_config.py tests/test_settings_llm.py -v)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated — 32 passed
+  - [x] Committed
 
-- [ ] T04: Milestone — push and review foundation
+- [x] T04: Milestone — push and review foundation
   - Ref: R01, R02, R03, R04, R05, R06, R07, R12
   - Type: trivial
   - Route: orchestrator
@@ -60,10 +62,10 @@ Generated from SPEC.md. 13 tasks.
   - Files: (git operations)
   - Depends: T01, T02, T03
   - Parallel: none
-  - [ ] Committed (→ git commit + push)
-  - [ ] PR reviews (→ /pr-review-reactor sync; inject fix tasks if needed)
+  - [x] Committed — all pushed
+  - [x] PR reviews — no review comments yet
 
-- [ ] T05: Wire per-stage backends into Pipeline and workflows
+- [x] T05: Wire per-stage backends into Pipeline and workflows
   - Ref: R08, R14
   - Type: substantive
   - Route: codex
@@ -72,11 +74,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/pipeline.py, lib/writing/workflows/long_form.py, lib/writing/workflows/short_form.py
   - Depends: T02
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/ -v)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated — 223 passed
+  - [x] Committed
 
-- [ ] T06: Add session LLM snapshot persistence
+- [x] T06: Add session LLM snapshot persistence
   - Ref: R09
   - Type: substantive
   - Route: codex
@@ -85,11 +87,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/models.py, lib/writing/session.py, lib/writing/pipeline.py
   - Depends: T05
   - Parallel: T07
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + python -c "from writing.models import SessionState; s = SessionState(content_type='paper', instruction='test'); assert hasattr(s, 'llm_settings')")
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated — 223 passed
+  - [x] Committed
 
-- [ ] T07: Integrate prompt budget from ModelSpec
+- [x] T07: Integrate prompt budget from ModelSpec
   - Ref: R10
   - Type: substantive
   - Route: codex
@@ -98,11 +100,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/prompt_assembler.py, lib/writing/workflows/long_form.py, lib/writing/workflows/short_form.py
   - Depends: T05
   - Parallel: T06
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/ -v)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated — 223 passed
+  - [x] Committed
 
-- [ ] T08: Add outline engine selection
+- [x] T08: Add outline engine selection
   - Ref: R11
   - Type: substantive
   - Route: codex
@@ -111,11 +113,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: lib/writing/llm_config.py, lib/writing/workflows/long_form.py
   - Depends: T05
   - Parallel: T06, T07
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/ -v)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via codex-run
+  - [x] Validated — 223 passed
+  - [x] Committed
 
-- [ ] T09: Milestone — push and review pipeline wiring
+- [x] T09: Milestone — push and review pipeline wiring
   - Ref: R08, R09, R10, R11, R14
   - Type: trivial
   - Route: orchestrator
@@ -124,10 +126,10 @@ Generated from SPEC.md. 13 tasks.
   - Files: (git operations)
   - Depends: T05, T06, T07, T08
   - Parallel: none
-  - [ ] Committed (→ git commit + push)
-  - [ ] PR reviews (→ /pr-review-reactor sync; inject fix tasks if needed)
+  - [x] Committed — all pushed
+  - [x] PR reviews — no comments yet
 
-- [ ] T10: Update slash commands for --llm flag
+- [x] T10: Update slash commands for --llm flag
   - Ref: R13
   - Type: trivial
   - Route: orchestrator
@@ -136,11 +138,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: commands/write.md, commands/write-next.md
   - Depends: T06
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via direct
+  - [x] Validated
+  - [x] Committed
 
-- [ ] T11: Write integration and pipeline wiring tests
+- [x] T11: Write integration and pipeline wiring tests
   - Ref: R08, R09, R10, R11, R14
   - Type: substantive
   - Route: codex
@@ -149,11 +151,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: tests/test_pipeline_backends.py (new), tests/integration/test_full_workflow.py
   - Depends: T05, T06, T07, T08
   - Parallel: T10
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/ -v)
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via direct (Codex failed, wrote directly)
+  - [x] Validated — 234 passed
+  - [x] Committed
 
-- [ ] T12: Spec coverage audit and final CI validation
+- [x] T12: Spec coverage audit and final CI validation
   - Ref: R01-R14
   - Type: substantive
   - Route: orchestrator
@@ -162,11 +164,11 @@ Generated from SPEC.md. 13 tasks.
   - Files: (review only, fix if needed)
   - Depends: T10, T11
   - Parallel: none
-  - [ ] Dispatched (→ TaskOutput block:true to collect result; if using worktrees, agents must checkout the feature branch)
-  - [ ] Validated (→ run-validation.sh + pytest tests/ -v (3 runs))
-  - [ ] Committed (→ git commit + push)
+  - [x] Dispatched via direct — all 10 ACs verified
+  - [x] Validated — 234 passed 3/3 runs
+  - [x] Committed
 
-- [ ] T13: Final sign-off
+- [x] T13: Final sign-off
   - Ref: R01-R14
   - Type: trivial
   - Route: orchestrator
@@ -175,7 +177,7 @@ Generated from SPEC.md. 13 tasks.
   - Files: (git operations)
   - Depends: T12
   - Parallel: none
-  - [ ] Committed (→ git commit + push)
+  - [x] Committed
 
 ## Follow-Up Ideas
 
