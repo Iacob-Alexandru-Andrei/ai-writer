@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from writing.backends import get_backend
@@ -21,6 +22,7 @@ from writing.citation_audit import audit_citations
 from writing.corpus import Corpus
 from writing.fewshot import select_examples
 from writing.integrations.storm_adapter import StormAdapter
+from writing.llm_config import StageType
 from writing.models import (
     ContentType,
     GenerationResult,
@@ -59,6 +61,7 @@ class LongFormWorkflow:
         self,
         *,
         session_manager: SessionManager | None = None,
+        backend_resolver: Callable[[StageType], LLMBackend] | None = None,
         backend: LLMBackend | None = None,
         settings: WriterSettings | None = None,
     ) -> None:
@@ -67,6 +70,8 @@ class LongFormWorkflow:
         Args:
             session_manager: Session persistence manager.  When *None*,
                 a new ``SessionManager`` is created with *settings*.
+            backend_resolver: Optional callable that resolves the LLM
+                backend lazily for each stage.
             backend: LLM backend for text generation.  When *None*,
                 ``get_backend()`` selects the default.
             settings: Writer settings.  When *None*, settings are loaded
@@ -76,7 +81,12 @@ class LongFormWorkflow:
         self._session_manager: SessionManager = (
             session_manager if session_manager is not None else SessionManager(self._settings)
         )
-        self._backend: LLMBackend = backend if backend is not None else get_backend()
+        self._backend_resolver = backend_resolver
+        self._backend: LLMBackend | None = (
+            backend if backend is not None else None
+        )
+        if self._backend is None and self._backend_resolver is None:
+            self._backend = get_backend()
         self._example_files: dict[str, list[str]] = {}
 
     # ------------------------------------------------------------------
@@ -124,7 +134,7 @@ class LongFormWorkflow:
 
         # Load corpus and run style analysis.
         corpus = self._load_corpus(session)
-        profile = analyze_style(corpus, self._backend)
+        profile = analyze_style(corpus, self._get_backend(StageType.STYLE_ANALYSIS))
         self._session_manager.set_style_profile(session, profile)
         self._session_manager.set_status(session, SessionStatus.ANALYZING)
 
@@ -216,7 +226,8 @@ class LongFormWorkflow:
             settings=self._settings,
         )
 
-        content = self._backend.generate(prompt.user_prompt, system=prompt.system_prompt or None)
+        backend = self._get_backend(StageType.SECTION_GENERATION)
+        content = backend.generate(prompt.user_prompt, system=prompt.system_prompt or None)
 
         result = GenerationResult(
             content=content,
@@ -296,6 +307,15 @@ class LongFormWorkflow:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _get_backend(self, stage: StageType) -> LLMBackend:
+        """Return the configured backend for a workflow stage."""
+        if self._backend is not None:
+            return self._backend
+        if self._backend_resolver is None:
+            msg = "No backend or backend resolver configured."
+            raise RuntimeError(msg)
+        return self._backend_resolver(stage)
 
     def _load_corpus(self, session: SessionState) -> Corpus:
         """Load and return a ``Corpus`` from the session's corpus directory.
@@ -401,7 +421,7 @@ class LongFormWorkflow:
             f"Return ONLY a numbered list of section titles, one per line. "
             f"Do not include any other text."
         )
-        response = self._backend.generate(prompt)
+        response = self._get_backend(StageType.OUTLINE).generate(prompt)
         return self._parse_outline_response(response)
 
     @staticmethod
