@@ -42,7 +42,8 @@ def test_claude_cli_backend_default_command_has_no_model_flag() -> None:
     assert "--model" not in cmd
     # claude -p does not support --max-tokens; budget enforced at prompt assembly
     assert "--max-tokens" not in cmd
-    assert cmd[-1] == "Write an introduction."
+    # Prompt is piped via stdin, not passed as CLI argument
+    assert mock_run.call_args.kwargs["input"] == "Write an introduction."
 
 
 def test_claude_cli_backend_includes_model_flag_when_model_name_is_set() -> None:

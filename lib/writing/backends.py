@@ -107,10 +107,10 @@ class ClaudeCLIBackend(LLMBackend):
         # enforced at the prompt-assembly level via self.max_output_tokens.
         if system:
             cmd.extend(["--system-prompt", system])
-        cmd.append(prompt)
-
+        # Pipe the prompt via stdin to avoid ARG_MAX limits on long prompts.
         result = subprocess.run(  # noqa: S603
             cmd,
+            input=prompt,
             capture_output=True,
             text=True,
             check=False,

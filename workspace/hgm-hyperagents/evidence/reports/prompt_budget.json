@@ -1,0 +1,13 @@
+{
+  "total_tokens": 4784,
+  "budget_report": {
+    "style_profile": 483,
+    "few_shot_examples": 3,
+    "running_context": 4000,
+    "bibliography_hints": 3,
+    "outline": 3,
+    "total": 4784
+  },
+  "user_prompt_length": 29467,
+  "system_prompt_length": 0
+}
